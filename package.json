@@ -1,0 +1,46 @@
+{
+  "name": "nast-ui-dev",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "info": "vue-cli-service build --report",
+    "publish:dev": "npm i -S ./app/nast-ui"
+  },
+  "dependencies": {
+    "lodash": "^4.*",
+    "nast": "^0.*",
+    "nast-ui": "file:app/nast-ui",
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-plugin-eslint": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "sass": "^1.22.3",
+    "sass-loader": "^7.1.0",
+    "vue-cli-plugin-nast": "^0.2.12",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "eslintIgnore": [
+    "node_modules",
+    "publish"
+  ]
+}
