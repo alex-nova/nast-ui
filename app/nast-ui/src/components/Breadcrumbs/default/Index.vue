@@ -2,8 +2,10 @@
   <div class="n-breadcrumbs">
     <div v-for="(item, key) in items" :key="item.title" :class="['item', {active: last(key)}]">
       <slot name="item" :item="item">
-        <n-icon v-if="nIcon && item.icon" :icon="item.icon" />
-        <n-link :to="last(key) ? {} : item.route" :class="[ { active: last(key), }, ]">{{ item.title }}</n-link>
+        <n-link :to="last(key) ? {} : item.route" :class="[ { active: last(key), }, ]">
+          <n-icon v-if="nIcon && item.icon" :icon="item.icon" />
+          {{ item.title }}
+        </n-link>
       </slot>
       <span v-if="!last(key)" class="separator">
         <slot name="separator"> / </slot>
@@ -39,23 +41,28 @@ export default {
     .item {
       display: flex;
       align-items: center;
-      color: var(--link-color);
       
+      .n-link {
+        color: var(--link-color);
+        &:hover { text-decoration: none; }
+      }
+      .n-icon {
+        margin-right: 4px;
+      }
+      .separator {
+        padding: 0 1em;
+      }
+  
       &.active {
         color: inherit;
         .n-link {
           color: inherit;
         }
       }
-      .n-link:hover {
-        text-decoration: none;
-      }
-      .n-icon {
-        color: inherit;
-        margin-right: 4px;
-      }
-      .separator {
-        padding: 0 1em;
+      &:not(.active) {
+        .n-icon {
+          color: var(--link-color);
+        }
       }
     }
   }

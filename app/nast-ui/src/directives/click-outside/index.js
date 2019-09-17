@@ -7,8 +7,8 @@ export default {
       }
     }
     
-    document.addEventListener('click', clickOutside)
-    el.$destroy = () => document.removeEventListener('click', clickOutside)
+    document.addEventListener('mousedown', clickOutside)
+    el.$destroy = () => document.removeEventListener('mousedown', clickOutside)
   },
   unbind(el) {
     el.$destroy()

@@ -9,8 +9,9 @@
     "publish:dev": "npm i -S ./app/nast-ui"
   },
   "dependencies": {
+    "highlight.js": "^9.15.9",
     "lodash": "^4.*",
-    "nast": "^0.*",
+    "nast": "file:../nast/app/nast",
     "nast-ui": "file:app/nast-ui",
     "vue": "^2.6.10"
   },
@@ -27,7 +28,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "sass": "^1.22.3",
     "sass-loader": "^7.1.0",
-    "vue-cli-plugin-nast": "^0.2.12",
+    "vue-cli-plugin-nast": "file:../nast/app/vue-cli-plugin-nast",
     "vue-template-compiler": "^2.6.10"
   },
   "postcss": {

@@ -6,17 +6,26 @@ export default {
       index: { icon: 'tachometer-alt', route: 'index', parent: null, },
       components: { icon: 'list-alt', route: 'components', parent: 'index', },
       button: { route: 'button', parent: 'components', },
-    
+      dropdown: { route: 'dropdown', parent: 'components', },
+      input: { route: 'input', parent: 'components', },
+      popup: { route: 'popup', parent: 'components', },
+  
       directives: { icon: 'sitemap', route: 'directives', parent: 'index', },
+      konstructor: { icon: 'sitemap', route: 'konstructor', parent: 'index', },
     },
     
     navigation: [
       { name: 'index', },
-      { name: 'componentsGroup', icon: 'list-alt', children: [
-        { name: 'components', },
+      { name: 'componentsGroup', icon: 'folder', children: [
         { name: 'button', },
+        { name: 'dropdown', },
+        { name: 'input', },
+      ], },
+      { name: 'baseComponentsGroup', icon: 'folder', children: [
+        { name: 'popup', },
       ], },
       { name: 'directives', },
+      { name: 'konstructor', },
     ],
     
     titles: {
@@ -24,7 +33,13 @@ export default {
       componentsGroup: 'Компоненты',
       components: 'Все компоненты',
       button: 'Button',
+      dropdown: 'Dropdown',
+      input: 'Input',
       directives: 'Директивы',
+      konstructor: 'Конструктор',
+      
+      baseComponentsGroup: 'Базовые компоненты',
+      popup: 'Popup',
     },
   },
   

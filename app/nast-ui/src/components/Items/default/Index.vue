@@ -1,6 +1,6 @@
 <template>
   <div :class="[ 'n-items', { vertical, }, ]">
-    <slot />
+    <div class="content"><slot /></div>
   </div>
 </template>
 
@@ -20,11 +20,15 @@ export default {
 </style>
 <style scoped lang="scss">
   .n-items {
-    margin: calc(-1 * var(--n-items-margin)) !important; // important потому что n-card обнуляет margin-top
-    overflow: auto; // fix схлопывания margin. upd. ломает тени
+    margin: calc(-1 * var(--n-items-margin));
     
-    &::v-deep >* {
+    .content {
+      display: inline-block;
+      width: 100%;
+    }
+    .content::v-deep >* {
       margin: var(--n-items-margin);
+      display: inline-block;
     }
     
     &+.n-items { margin-top: calc(2 * var(--n-items-margin)); }

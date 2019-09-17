@@ -17,10 +17,9 @@ export default {
   @import "./../../../_utils/scssVariables";
   
   body {
-    font-family: var(--text-font);
+    font: var(--text-font);
     background-color: var(--body-bg);
     color: var(--text-color);
-    font-weight: 300;
     line-height: var(--line-height);
     position: relative;
     padding: 0;

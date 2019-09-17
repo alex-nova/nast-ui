@@ -26,7 +26,7 @@ export default {
   mixins: [ props, ],
   computed: {
     nIcon() {
-      return !!this.$options.components['nIcon']
+      return Boolean(this.$options.components['nIcon'])
     },
   },
   methods: {
@@ -42,7 +42,7 @@ export default {
 <style lang="scss">
   html {
     --n-button-padding: .5em .8em;
-    --n-button-border-radius: .25em;
+    --n-button-border-radius: var(--border-radius);
   }
 </style>
 <style lang="scss" scoped>
@@ -64,9 +64,6 @@ export default {
           border-color: var(--#{$color}-d-3);
           box-shadow: inset 1px 1px 3px rgba(0, 0, 0, .3);
         }
-        &:focus {
-          box-shadow: 1px 1px 3px 1px var(--#{$color}-t-7);
-        }
       }
     }
   
@@ -80,45 +77,27 @@ export default {
     border-radius: var(--n-button-border-radius);
     user-select: none;
     white-space: nowrap;
+    
+    .icon {
+      vertical-align: baseline;
+      font-size: calc(1em - 2px);
+    }
+    .icon + .content { margin-left: .5em; }
+    .content + .icon { margin-left: .5em; }
+    .content { display: inline-block; }
   
-    &>* {
-      white-space: normal;
-    }
-    &[disabled] {
-      cursor: default;
-      opacity: .7;
-    }
+  
+    &>* { white-space: normal; }
+    &[disabled] { cursor: default; opacity: .7; }
     &.outline {
       background-color: transparent;
-      &:not(:hover):not(:active) {
-        color: var(--text-color);
-      }
+      &:not(:hover):not(:active) { color: inherit; }
     }
     &.flat {
-      background-color: transparent;
-      border-color: transparent;
-      &:not(:hover):not(:active) {
-        color: var(--text-color);
-      }
+      background-color: transparent; border-color: transparent;
+      &:not(:hover):not(:active) { color: inherit; }
     }
-    &.round {
-      border-radius: 100%;
-      width: 2em;
-      height: 2em;
-      padding: 0;
-      overflow: hidden;
-    }
-    &.wide {
-      display: block;
-      width: 100%;
-    }
+    &.round { border-radius: 100%; width: 2em; height: 2em; padding: 0; overflow: hidden; }
+    &.wide { display: block; width: 100%; }
   }
-
-  .icon {
-    vertical-align: baseline;
-    font-size: calc(1em - 2px);
-  }
-  .icon + .content { margin-left: .5em; }
-  .content + .icon { margin-left: .5em; }
-  .content { display: inline-block; }
 </style>

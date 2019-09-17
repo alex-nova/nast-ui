@@ -1,21 +1,21 @@
 <template>
-  <div :class="[ 'n-navigation', { vertical, }, ]">
-    <div v-for="(item, i) in data" :key="item.title">
+  <div :class="[ 'n-navigation', { 'n-vertical': vertical, }, ]">
+    <template v-for="(item, i) in data">
       <template v-if="item.children">
-        <n-navigation-group :item="item" :active="getActive(i)" :absolute="!vertical" :click="(e) => s_click(e, item)">
+        <n-navigation-group :key="item.title" :item="item" :active="getActive(i)" :absolute="!vertical" :click="(e) => s_click(e, item)">
           <template v-slot="{ item, }">
             <slot :item="item" name="item" />
           </template>
         </n-navigation-group>
       </template>
       <template v-else>
-        <n-navigation-item :item="item" :active="active.index === i" :click="(e) => s_click(e, item)">
+        <n-navigation-item :key="item.title" :item="item" :active="active.index === i" :click="(e) => s_click(e, item)">
           <template v-slot="{ item, }">
             <slot :item="item" name="item" />
           </template>
         </n-navigation-item>
       </template>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -103,13 +103,13 @@ export default {
     justify-content: flex-end;
     margin: -.25em -1em;
     
-    &.vertical {
+    &.n-vertical {
       flex-direction: column;
     }
     
     &::v-deep .n-navigation-item {
       margin: .25em 1em;
-      .active {
+      .n-active {
         border-bottom: 1px solid var(--primary);
       }
     }

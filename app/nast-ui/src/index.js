@@ -1,12 +1,12 @@
 import components from './components'
-import directives from './directives'
+// import directives from './directives'
 import layouts from './layouts'
 
 
 export default {
-  install(options) {
-    components.install(options)
-    directives.install(options)
-    layouts.install(options)
+  install(Vue, options) {
+    components.install(Vue, options)
+    // directives.install(Vue, options)
+    layouts.install(Vue, options)
   },
 }

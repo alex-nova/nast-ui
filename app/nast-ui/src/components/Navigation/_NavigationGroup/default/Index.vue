@@ -1,28 +1,28 @@
 <template>
-  <div v-click-outside="clickOutside" :class="[ 'n-navigation-group', {absolute}, {open: isOpen}, ]">
+  <div v-click-outside="clickOutside" :class="[ 'n-navigation-group', {'n-absolute': absolute}, {open: isOpen}, ]">
     <n-navigation-item :item="item" :click="() => toggle()" :active="isActive()">
       <template v-slot="{ item, }">
         <slot :item="item" />
       </template>
     </n-navigation-item>
     
-    <div v-show="isOpen" class="dropdown">
-      <div v-for="(child, i) in item.children" :key="child.title">
+    <div v-show="isOpen" class="n-dropdown">
+      <template v-for="(child, i) in item.children">
         <template v-if="child.children">
-          <n-navigation-group :item="child" :active="active.children" :absolute="absolute" :click="click">
+          <n-navigation-group :key="child.title" :item="child" :active="active.children" :absolute="absolute" :click="click">
             <template v-slot="{ item, }">
               <slot :item="item" />
             </template>
           </n-navigation-group>
         </template>
         <template v-else>
-          <n-navigation-item :item="child" :click="itemClick" :active="isActive(i)">
+          <n-navigation-item :key="child.title" :item="child" :click="itemClick" :active="isActive(i)">
             <template v-slot="{ item, }">
               <slot :item="item" />
             </template>
           </n-navigation-item>
         </template>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -70,8 +70,8 @@ export default {
 
 <style lang="scss" scoped>
   .n-navigation-group {
-    &.absolute {
-      .dropdown {
+    &.n-absolute {
+      .n-dropdown {
         position: absolute;
         background: rgba(255, 255, 255, .9);
         border: 1px solid #eee;

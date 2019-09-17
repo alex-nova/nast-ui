@@ -1,11 +1,11 @@
 <template>
   <aside class="n-aside">
     <transition name="slideWidth">
-      <div v-if="offset && s_open" class="offset"></div>
+      <div v-if="offset && s_open" class="n-offset"></div>
     </transition>
     
     <transition :name="fixed ? 'slideLeft' : 'slideWidth'">
-      <div v-show="s_open" v-click-outside="clickOutside" :class="[ 'content', { 'n-fixed': fixed, }, ]">
+      <div v-show="s_open" v-click-outside="clickOutside" :class="[ 'n-content', { 'n-fixed': fixed, }, ]">
         <slot />
       </div>
     </transition>
@@ -104,14 +104,17 @@ export default {
 <style lang="scss" scoped>
   .n-aside {
     
-    .offset {
+    .n-offset {
       width: var(--n-aside-width);
+      transition: width var(--transition);
     }
     
-    .content {
+    .n-content {
+      transition: width var(--transition);
       width: var(--n-aside-width);
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
       background: var(--n-aside-bg);
       box-shadow: var(--n-aside-shadow);
   
@@ -125,7 +128,7 @@ export default {
   }
 
   .slideWidth-enter-active, .slideWidth-leave-active {
-    transition: width 0.5s;
+    transition: width var(--transition);
     overflow: hidden;
   }
   .slideWidth-enter, .slideWidth-leave-to {
@@ -134,7 +137,7 @@ export default {
     pointer-events: none;
   }
   .slideLeft-enter-active, .slideLeft-leave-active {
-    transition: left 0.5s;
+    transition: left var(--transition);
   }
   .slideLeft-enter, .slideLeft-leave-to {
     left: calc(-1 * var(--n-aside-width)) !important;

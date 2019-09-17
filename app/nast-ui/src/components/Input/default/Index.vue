@@ -1,80 +1,164 @@
 <template>
-  <div :class="[ 'n-input', {inline}, color, {'no-title': !title}, ]">
-    <div v-if="text" class="n-input-text">{{ value }}</div>
-    <textarea v-else-if="type === 'textarea'" ref="textarea" v-bind="props" v-on="events" />
-    <input v-else v-bind="props" v-on="events" />
-    <label v-if="title" :for="`field-${name}`">{{ title }}</label>
-    
-    <div v-if="message !== false" class="message">{{ message }}</div>
+  <div :class="[ 'n-input', ...containerClasses, ]" @focusin="s_focusin" @focusout="s_focusout">
+    <div class="n-wrapper">
+      <n-icon v-if="nIcon && (icon || iconInner)" :icon="icon || iconInner" class="icon" />
+      
+      <div class="n-content" @click="s_click">
+        <label v-if="title" :for="name" :class="[ {'n-active': titleIsActive}, ]">{{ title }}</label>
+        <div class="n-margin">
+          <div v-for="(v, i) in values" :key="i" class="n-item">
+            <div class="n-badge">{{ v }}</div>
+          </div>
+          <span v-if="text" class="n-text-content">{{ textValue }}</span>
+          <n-mini-input v-else ref="input" v-bind="inputProps" v-on="inputEvents" />
+        </div>
+      </div>
+  
+      <n-icon v-if="nIcon && loading" :icon="'spinner'" class="icon-right" pulse />
+      <n-icon v-else-if="nIcon && (iconRight || iconRightInner)" :icon="iconRight || iconRightInner" class="icon-right" />
+    </div>
   </div>
 </template>
 
 <script>
+import isArray from 'lodash/isArray'
 import props from '../props'
+import NMiniInput from './MiniInput'
 
 export default {
   name: 'NInput',
+  components: { NMiniInput, },
   mixins: [ props, ],
   data: () => ({
+    isFocused: false,
     s_value: '',
+    isArray: false,
+    values: [],
+    lastValue: '',
   }),
   computed: {
-    props() {
+    inputProps() {
       return {
-        id: `field-${this.name}`,
+        value: this.s_value,
         name: this.name,
-        value: this.value !== undefined ? this.value : this.s_value,
+        id: this.name,
         type: this.type,
         placeholder: this.placeholder,
-        readonly: this.readonly,
-        disabled: this.disabled,
+        disabled: this.disabled || this.loading,
       }
     },
-    events() {
+    inputEvents() {
       return {
         input: this.s_input,
         change: this.s_change,
-        focusin: this.s_focusin,
-        focusout: this.s_focusout,
+        keydown: this.s_keydown,
+        keyup: this.s_keyup,
       }
     },
-    color() {
-      if (this.success !== false) {
-        return 'success'
-      }
-      if (this.info !== false) {
-        return 'info'
-      }
-      if (this.warning !== false) {
-        return 'warning'
-      }
-      if (this.danger !== false) {
-        return 'danger'
-      }
-      return 'primary'
+    titleIsActive() {
+      return this.isFocused || this.s_value || this.placeholder || this.values.length || this.text
     },
-    message() {
-      return this.primary || this.success || this.info || this.warning || this.danger || false
+    containerClasses() {
+      return [
+        { 'n-inline': this.inline, },
+        { 'n-focused': this.isFocused, },
+        { 'n-no-label': !this.title, },
+        { 'n-list': this.isArray, },
+        { 'n-disabled': this.disabled || this.loading, },
+        { 'n-text': this.text, },
+        { 'n-inner-icon': this.iconInner || this.iconRightInner || this.loading, },
+      ]
+    },
+    textValue() {
+      if (this.s_value) {
+        return this.s_value
+      }
+      if (this.text === true) {
+        return '-'
+      }
+      return this.text
+    },
+    nIcon() {
+      return Boolean(this.$options.components['nIcon'])
     },
   },
+  watch: {
+    value(value) {
+      this.calcValue(value)
+    },
+  },
+  mounted() {
+    this.calcValue(this.value)
+  },
   methods: {
-    s_input(event) {
-      const value = event.target.value
-      this.$emit('input', value, event)
-      this.input(value, event)
+    calcValue(value) {
+      if (isArray(value)) {
+        this.values = value
+        this.isArray = true
+      } else {
+        this.s_value = value
+      }
     },
-    s_change(event) {
-      const value = event.target.value
-      this.$emit('change', value, event)
-      this.change(value, event)
+    s_input(e) {
+      this.s_value = e.target.value
+      if (!this.isArray) {
+        this.$emit('modelChange', this.s_value, e)
+      }
+      this.input(this.s_value, e)
+      this.$emit('input', this.s_value, e)
     },
-    s_focusin(event) {
-      this.focusin(event)
-      this.$emit('focusin', event)
+    s_change(e) {
+      this.s_value = e.target.value
+      if (!this.isArray) {
+        this.change(this.s_value, e)
+        this.$emit('change', this.s_value, e)
+      }
     },
-    s_focusout(event) {
-      this.focusout(event)
-      this.$emit('focusout', event)
+    s_click(e) {
+      this.$refs.input.focus()
+      this.click(e)
+      this.$emit('click', e)
+    },
+    s_focusin(e) {
+      this.isFocused = true
+      this.focusin(e)
+      this.$emit('focusin', e)
+    },
+    s_focusout(e) {
+      this.isFocused = false
+      this.focusout(e)
+      this.$emit('focusout', e)
+    },
+    s_keydown(e) {
+      this.keydown(e)
+      this.$emit('keydown', e)
+      
+      if (e.key === 'Backspace' && this.values.length) {
+        this.lastValue = this.s_value
+      }
+    },
+    s_keyup(e) {
+      this.keyup(e)
+      this.$emit('keyup', e)
+      
+      const changeItems = (values, e) => {
+        if (this.isArray) {
+          this.change(values, e)
+          this.$emit('change', values, e)
+          this.$emit('modelChange', values, e)
+        }
+        this.values = values
+      }
+  
+      if (e.key === 'Backspace' && this.values.length && !this.lastValue) {
+        const values = this.values.slice(0, -1)
+        changeItems(values, e)
+      }
+      if (e.key === 'Enter' && this.isArray && this.s_value.trim()) {
+        const values = [ ...this.values, this.s_value.trim(), ]
+        this.s_value = ''
+        changeItems(values, e)
+      }
     },
   },
 }
@@ -82,81 +166,100 @@ export default {
 
 <style lang="scss" src="./../../../_utils/cssVariables.scss"></style>
 <style lang="scss">
-  .n-input {
-    --n-input-padding: .5em;
-    --n-input-border-radius: 5px;
-    --n-input-title-font-size: 0.9em;
-    
-    --n-input-bg: #fff;
-    --n-input-disabled-bg: rgba(128, 128, 128, .1);
+  html {
+  
   }
 </style>
 <style lang="scss" scoped>
   @import "./../../../_utils/scssVariables";
 
   .n-input {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: calc(var(--n-input-title-font-size) + .5em);
+    padding-top: 1em;
+    vertical-align: baseline;
+    width: 100%;
+    &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom: 1px solid var(--border-color); }
     
-    &.no-title {
-      padding-top: 0;
+    .n-wrapper {
+      display: flex;
+      align-items: center;
+      width: 100%;
     }
+    
+    .n-content {
+      cursor: text;
+      position: relative;
+      width: 100%;
   
-    @each $color, $value in $colors {
-      &.#{$color} {
-        .message {
-          color: var(--#{$color})
+      label {
+        color: inherit;
+        opacity: .5;
+        position: absolute;
+        top: .4em;
+        height: 100%;
+        left: 0;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1em;
+        line-height: 1;
+        transition: top .2s ease-out, font-size .2s ease-out;
+        text-align: initial;
+        pointer-events: none;
+    
+        &.n-active {
+          top: -1em;
+          font-size: .8em;
         }
       }
-    }
-    input, textarea, .n-input-text {
-      padding: var(--n-input-padding);
-      line-height: 1.15;
-      display: block;
-      width: 100%;
-      border: 1px solid var(--gray-8);
-      box-sizing: border-box;
-    }
-    input, textarea {
-      border-radius: var(--n-input-border-radius);
-      outline: none;
-      background: var(--n-input-bg);
-      &:focus {
-        box-shadow: 0 0 3px var(--primary-t-7);
+  
+      .n-margin {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: -2px 0 -2px -2px;
+        &>* {
+          margin: 2px;
+        }
       }
-      &:disabled {
-        background: var(--n-input-disabled-bg);
+      .n-item {
+        .n-badge {
+          padding: .1em .4em;
+          font-size: .8em;
+          border: 1px solid #333;
+          border-radius: var(--border-radius);
+          display: block;
+          vertical-align: center;
+        }
       }
-    }
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-    .n-input-text {
-      padding-left: 0;
-      padding-right: 0;
-      border-color: transparent;
-    }
-    label {
-      position: absolute;
-      font-size: var(--n-input-title-font-size);
-      top: 0;
-      order: -1;
+      .n-input-mini-input, .n-text-content {
+        flex-grow: 1;
+        line-height: 1.2;
+        padding: .3em 0;
+      }
     }
   
-    .message {
-      display: inline-block;
-      font-size: .8em;
-      text-align: left;
+    .icon { margin-right: 7px; }
+    .icon-right { margin-left: 7px; }
+  
+    &.n-text {
+      .n-content { border-color: transparent; }
+    }
+    &.n-disabled {
+      opacity: .8;
+      &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom-style: dotted; }
+      &.n-inner-icon .n-wrapper, &:not(.n-inner-icon) .n-content { background: rgba(127, 127, 127, .01); }
+    }
+    &.n-list {
+      .n-input-mini-input::v-deep input { width: 2px; }
+    }
+    &.n-no-label { padding-top: 0; }
+    &.n-inline { display: inline-block; width: 200px; }
+    &.n-focused {
+      label { color: var(--primary); opacity: 1; }
+      .n-content { border-color: var(--primary); }
     }
     
-    &.inline {
-      display: inline-flex;
-    }
   }
   
 </style>

@@ -17,7 +17,7 @@ export default {
   mixins: [ props, ],
   computed: {
     nLoader() {
-      return !!this.$options.components['nLoader']
+      return Boolean(this.$options.components['nLoader'])
     },
   },
 }
@@ -33,10 +33,10 @@ export default {
   
   .n-card {
     position: relative;
-    background: #fff;
+    background: var(--content-bg);
     box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
-    border-radius: 3px;
-    margin: 20px 0;
+    border-radius: var(--border-radius);
+    margin: 20px;
 
     .content {
       &>*:first-child {

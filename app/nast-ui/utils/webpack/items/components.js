@@ -40,7 +40,7 @@ module.exports = {
   NavigationGroup: { require: [ 'NavigationItem', ], parent: 'Navigation',
     default: () => {if ($nwc.NavigationGroup) return require(/* webpackMode: "eager" */`nast-ui/${$nwc.NavigationGroup}/Index.vue`)},
     custom: () => {if ($nwcc.NavigationGroup) return require(/* webpackMode: "eager" */`./../../../../${$nwcc.NavigationGroup}`)}, },
-  NavigationItem: { parent: 'Navigation', require: [ 'ScrollTo', ],
+  NavigationItem: { parent: 'Navigation',
     default: () => {if ($nwc.NavigationItem) return require(/* webpackMode: "eager" */`nast-ui/${$nwc.NavigationItem}/Index.vue`)},
     custom: () => {if ($nwcc.NavigationItem) return require(/* webpackMode: "eager" */`./../../../../${$nwcc.NavigationItem}`)}, },
   Table: {

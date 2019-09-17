@@ -1,9 +1,10 @@
-import Vue from 'vue'
-import Simple from './simple/Index.vue'
+import Simple from './Simple/Index.vue'
+import Cool from './Cool/Index.vue'
 
 
 export default {
-  install(options) {
+  install(Vue, options) {
     Vue.component('nLayoutSimple', Simple)
+    Vue.component('nLayoutCool', Cool)
   },
 }

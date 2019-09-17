@@ -1,21 +1,23 @@
 export default {
   model: {
     prop: 'value',
-    event: 'input',
+    event: 'modelChange',
   },
   props: {
     name: { type: String, default: () => `input-${Math.random()}`, },
     title: { type: String, default: '', },
-    value: { type: [ String, Number, ], default: '', },
+    value: { type: [ String, Number, Array, ], default: '', },
     type: { type: String, default: 'text', },
     placeholder: { type: String, default: '', },
     disabled: { type: Boolean, default: false, },
-    text: { type: Boolean, default: false, },
+    text: { type: [ Boolean, String, ], default: false, },
     inline: { type: Boolean, default: false, },
+    
     icon: { type: String, default: '', },
+    iconInner: { type: String, default: '', },
     iconRight: { type: String, default: '', },
+    iconRightInner: { type: String, default: '', },
     loading: { type: Boolean, default: false, },
-    animate: { type: String, default: 'shake', },
     
     primary: { type: [ String, Boolean, ], default: false, },
     success: { type: [ String, Boolean, ], default: false, },
@@ -23,11 +25,15 @@ export default {
     danger: { type: [ String, Boolean, ], default: false, },
     secondary: { type: [ String, Boolean, ], default: false, },
     tertiary: { type: [ String, Boolean, ], default: false, },
+    animate: { type: String, default: 'shake', },
   
+    click: { type: Function, default: () => {}, },
     input: { type: Function, default: () => {}, },
     change: { type: Function, default: () => {}, },
     focusin: { type: Function, default: () => {}, },
     focusout: { type: Function, default: () => {}, },
+    keydown: { type: Function, default: () => {}, },
+    keyup: { type: Function, default: () => {}, },
   },
   
   computed: {
@@ -55,10 +61,13 @@ export default {
     },
     events() {
       return {
+        click: this.click,
         input: this.input,
         change: this.change,
         focusin: this.focusin,
         focusout: this.focusout,
+        keydown: this.keydown,
+        keyup: this.keyup,
       }
     },
   },

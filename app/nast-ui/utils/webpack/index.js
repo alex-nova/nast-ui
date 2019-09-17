@@ -20,8 +20,15 @@ const installComponents = (Vue) => {
   const items = {}
   
   map(components, (c, n) => {
-    let component = c.default().default
-    if (!component) component = c.custom().default
+    const def = c.default()
+    const custom = c.custom()
+    let component = null
+    
+    if (def) {
+      component = def.default
+    } else if (custom) {
+      component = custom.default
+    }
     
     if (component) {
       items[`${prefix}${n}`] = component
@@ -35,7 +42,12 @@ const installLayouts = (Vue) => {
   const items = {}
   
   map(layouts, (c, n) => {
-    const item = c.default().default
+    const def = c.default()
+    let item = null
+    
+    if (def) {
+      item = def.default
+    }
     
     if (item) {
       items[`${prefix}Layout${n}`] = item

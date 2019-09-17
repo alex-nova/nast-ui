@@ -1,17 +1,28 @@
 <template>
   <div class="layout-main">
-    <n-layout-simple :menu="navigation">
-      <div slot="logo"><img :src="logo" /></div>
+    <n-layout-cool :menu="navigation">
+      <template #logo><img :src="logo" /></template>
+      <template #logo-min><img :src="logoMin" /></template>
+      <template #avatar><img :src="avatar" /></template>
       <div slot="content">
         <page-title />
         <router-view />
       </div>
-    </n-layout-simple>
+      <div slot="footer">
+        IDMatrix 2.0
+        <br />
+        © 2017—2019 ICORE Software Development
+        <br />
+        <n-link to="#">Сообщить об ошибке</n-link>
+      </div>
+    </n-layout-cool>
   </div>
 </template>
 
 <script>
 import logo from './../../assets/images/logo.png'
+import logoMin from './../../assets/images/logo-min.png'
+import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
 
 export default {
@@ -19,6 +30,8 @@ export default {
   components: { PageTitle, },
   data: () => ({
     logo,
+    logoMin,
+    avatar,
   }),
   computed: {
     ...$n.mapGetters('pages', [ 'navigation', ]),
@@ -40,8 +53,8 @@ export default {
     
     typography: (
       header-font: 'Roboto, sans-serif',
-      text-font: 'Roboto, sans-serif',
-      h1-font: '500 1.5em var(--header-font)',
+      text-font: '400 1em Roboto, sans-serif',
+      h1-font: '300 2em var(--header-font)',
       h3-font: '400 1.2em var(--header-font)',
       text-color: #444,
     ),

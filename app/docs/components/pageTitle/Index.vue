@@ -1,9 +1,7 @@
 <template>
   <div class="component-page-title">
     <div class="content">
-      <h1 slot="header">
-        {{ page.title }}
-      </h1>
+      <h1 slot="header">{{ page.title }}</h1>
       <n-breadcrumbs :items="breadcrumbs" />
     </div>
   </div>
@@ -29,15 +27,19 @@ export default {
 
 <style lang="scss" scoped>
 .component-page-title {
-  margin: 5px 0 30px;
+  margin: 0 0 30px;
   
   .content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     
     h1 {
       margin: 0;
+      padding: 25px var(--n-layout-content-padding);
+    }
+    .n-breadcrumbs {
+      padding: 12px var(--n-layout-content-padding);
+      background: #fff;
+      border: solid #ececec;
+      border-width: 1px 0;
     }
   }
 }
