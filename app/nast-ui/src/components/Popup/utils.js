@@ -1,88 +1,20 @@
 /**
  *
- * @param {boolean} toUp
- * @param {string} side
- * @param {string} align
- * @param {boolean} fixed
+ * @param {object} popupRect
  * @param {ClientRect} targetRect
- * @param {int} popupWidth
- * @param {int} popupHeight
+ * @param {boolean} fixed
  * @return {{top: number, left: number}}
  */
-const getPosition = (toUp, side, align, fixed, targetRect, popupWidth, popupHeight) => {
-  let top = 0
-  let left = 0
-  const height = popupHeight
-  const width = popupWidth
-  const coords = targetRect
-  
-  let alignShift
-  if (align === 'center') {
-    alignShift = Math.round((coords.width - width) / 2)
-  } else if (align === 'right') {
-    alignShift = Math.round(coords.width - width)
-  }
+const getPosition = (popupRect, targetRect, fixed) => {
+  let top
+  let left
   
   if (fixed) {
-    if (toUp) {
-      if (side === 'top') {
-        top = coords.top - height
-        left = coords.left
-      } else if (side === 'right') {
-        top = coords.bottom - height
-        left = coords.right
-      } else if (side === 'bottom') {
-        top = coords.bottom - height
-        left = coords.left
-      } else if (side === 'left') {
-        top = coords.bottom - height
-        left = coords.left - width
-      }
-    } else {
-      if (side === 'top') {
-        top = coords.top
-        left = coords.left
-      } else if (side === 'right') {
-        top = coords.top
-        left = coords.right + width
-      } else if (side === 'bottom') {
-        top = coords.bottom
-        left = coords.left
-      } else if (side === 'left') {
-        top = coords.top
-        left = coords.left - width
-      }
-    }
+    top = popupRect.top
+    left = popupRect.left
   } else {
-    if (toUp) {
-      if (side === 'top') {
-        top = -height - coords.height
-        left = alignShift
-      } else if (side === 'right') {
-        top = -height
-        left = coords.width
-      } else if (side === 'bottom') {
-        top = 0
-        left = alignShift
-      } else if (side === 'left') {
-        top = -height
-        left = -width
-      }
-    } else {
-      if (side === 'top') {
-        top = -coords.height
-        left = alignShift
-      } else if (side === 'right') {
-        top = -coords.height
-        left = coords.width
-      } else if (side === 'bottom') {
-        top = 0
-        left = alignShift
-      } else if (side === 'left') {
-        top = -coords.height
-        left = coords.width
-      }
-    }
+    top = popupRect.top - targetRect.bottom
+    left = popupRect.left - targetRect.left
   }
   
   return { top, left, }
@@ -91,70 +23,20 @@ const getPosition = (toUp, side, align, fixed, targetRect, popupWidth, popupHeig
 /**
  * Показывает по каким параметрам popup не влез в окно
  *
- * @param {Element|Vue} popup
- * @param {ClientRect} targetRect
- * @param {object} position  css style { top: 0, right: 0, bottom: 0, left: 0, }
+ * @param {object} popupRect
  * @return {object} { top: true, right: true, bottom: true, left: true, total: true, }  true = влез
  */
-const isFit = (popup, targetRect, position) => {
-  const coords = targetRect
-  
+const isFit = (popupRect) => {
   const padding = 5
   
-  const abroad = {
-    top: coords.top - position.top + popup.clientHeight - padding,
-    right: window.innerWidth - coords.right - padding - popup.clientWidth + coords.width - position.left,
-    bottom: window.innerHeight - coords.bottom - padding - position.top - popup.clientHeight,
-    left: coords.left + position.left - padding,
-  }
-  
   let total = true
-  const result = Object.keys(abroad).reduce((result, key) => {
-    result[key] = abroad[key] >= 0
+  const result = Object.keys(popupRect).reduce((result, key) => {
+    result[key] = popupRect[key] >= padding
     if (!result[key]) total = false
     return result
   }, {})
   result.total = total
-  // console.log(result)
   return result
-}
-
-/**
- *
- * @param {object} fit  from function isFit
- * @param {boolean} toUp
- * @param {string} side
- * @return {object|undefined}  {toUp: (boolean), side: (string)}
- */
-const getRightDirection = (fit, toUp, side) => {
-  if (fit.total) {
-    return undefined
-  }
-  
-  let newToUp = toUp
-  let newSide = side
-  
-  if (!fit.top) {
-    newToUp = false
-    if (side === 'top') newSide = 'bottom'
-  } else if (!fit.bottom) {
-    newToUp = true
-    if (side === 'bottom') newSide = 'top'
-  } else if (side === 'bottom' || side === 'top') {
-    console.log('fit по ширине экрана')
-    // fit по ширине экрана
-  } else {
-    newSide = 'bottom'
-  }
-  
-  if (toUp === newToUp && side === newSide) {
-    return undefined
-  }
-  
-  return {
-    toUp: newToUp,
-    side: newSide,
-  }
 }
 
 /**
@@ -179,7 +61,7 @@ const getPopupRect = (toUp, side, align, targetRect, popupWidth, popupHeight) =>
   }
   if (side === 'bottom') {
     top = targetRect.bottom - (toUp ? popupHeight : 0)
-    bottom = toUp ? targetRect.bottom : targetRect.bottom + popupHeight
+    bottom = toUp ? targetRect.bottom : (targetRect.bottom + popupHeight)
   }
   if (side === 'top' || side === 'bottom') {
     if (align === 'right') {
@@ -208,7 +90,7 @@ const getPopupRect = (toUp, side, align, targetRect, popupWidth, popupHeight) =>
     bottom = toUp ? targetRect.bottom : targetRect.top + popupHeight
   }
   
-  bottom = window.innerWidth - bottom
+  bottom = window.innerHeight - bottom
   right = window.innerWidth - right
   
   return { top, left, bottom, right, }
@@ -218,6 +100,5 @@ const getPopupRect = (toUp, side, align, targetRect, popupWidth, popupHeight) =>
 export {
   getPosition,
   isFit,
-  getRightDirection,
   getPopupRect,
 }

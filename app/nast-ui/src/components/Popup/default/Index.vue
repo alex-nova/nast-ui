@@ -11,7 +11,7 @@
 
 <script>
 import props from './../props'
-import { getPosition, isFit, getRightDirection, getPopupRect, } from './../utils'
+import { getPosition, isFit, getPopupRect, } from './../utils'
 import debounce from 'lodash/debounce'
 
 export default {
@@ -21,7 +21,9 @@ export default {
     return {
       s_open: Boolean(this.open),
       visible: true, // всегда равен s_open, с задержкой в 1 мс (за это время идет расчет позиции)
-      position: {}, // { top: 0, right: 0, bottom: 0, left: 0, }
+      dir: null, // { toUp, side, align, }
+      maxWidth: undefined,
+      // fixed: true, // TODO режим как на телефоне
     }
   },
   computed: {
@@ -29,18 +31,18 @@ export default {
       return this.$slots.action[0].elm
     },
     style() {
+      let position = { top: 0, left: 0, }
+      if (this.dir && this.$refs.popup) {
+        const popupRect = this.getPopupRect(this.dir.toUp, this.dir.side, this.dir.align)
+        const pos = getPosition(popupRect, this.element.getBoundingClientRect(), false)
+        position = { top: `${pos.top}px`, left: `${pos.left}px`, }
+      }
+  
       return {
-        ...this.positionToStyle,
+        ...position,
+        maxWidth: this.maxWidth,
         opacity: this.visible ? 1 : 0,
       }
-    },
-    positionToStyle() {
-      return Object.keys(this.position).reduce((result, key) => {
-        if (this.position[key] !== undefined) {
-          result[key] = `${this.position[key]}px`
-        }
-        return result
-      }, {})
     },
   },
   watch: {
@@ -50,7 +52,7 @@ export default {
   },
   mounted() {
     this.onChange(this.s_open)
-    
+
     document.addEventListener('scroll', this.debouncedCalcStyle)
     window.addEventListener('resize', this.debouncedCalcStyle)
   },
@@ -74,36 +76,102 @@ export default {
       }
     },
     calcStyle() {
-      if (this.open) {
-        let position
-        const defaultPosition = this.getDefaultPosition()
-        const defaultFit = isFit(this.$refs.popup, this.element, defaultPosition)
+      if (this.s_open) {
+        let dir
+        const defaultFit = isFit(this.getPopupRect(this.toUp, this.side, this.align))
         
-        const popupRect = getPopupRect(this.toUp, this.side, this.align,
-          this.element.getBoundingClientRect(), this.$refs.popup.offsetWidth, this.$refs.popup.offsetHeight)
-        console.log(popupRect)
-        
-        if (defaultFit.total) { // если стандартная позиция стала влезать - возвращаем ее
-          position = defaultPosition
-        } else if (isFit(this.$refs.popup, this.element, this.position).total) { // если влезает текущая позиция - ничего не делаем
-          return
-        } else { // если ни стандартная ни предыдущая не влезают - считаем новую
-          const rightDirection = getRightDirection(defaultFit, this.toUp, this.side)
-          if (rightDirection) {
-            position = getPosition(rightDirection.toUp, rightDirection.side, this.align, false,
-              this.element.getBoundingClientRect(), this.$refs.popup.offsetWidth, this.$refs.popup.offsetHeight)
+        if (defaultFit.total) {
+          dir = {
+            toUp: this.toUp,
+            side: this.side,
+            align: this.align,
           }
+        } else {
+          dir = this.findPosition(this.toUp, this.side, this.align, defaultFit)
         }
         
-        // this.position = { ...position, }
+        this.dir = dir
+        
+        if (this.$refs.popup.clientWidth > window.innerWidth - 10) {
+          this.maxWidth = `${window.innerWidth - 10}px`
+        } else {
+          this.maxWidth = undefined
+        }
       }
+    },
+    findPosition(toUp, side, align, fit) {
+      let newDir = { toUp, side, align, }
+      
+      if (!fit.top && !fit.bottom) {
+        // FIXED
+      } else if (!fit.top) {
+        // если итак смотрит вниз
+        if (!toUp && side === 'bottom') {
+          // то ничего не делаем
+        } else {
+          // то меняем направление вниз
+          newDir.toUp = false
+          if (side === 'top') newDir.side = 'bottom'
+          
+          // если вниз не тоже поместился, то возвращаем назад
+          if (!isFit(this.getPopupRect(newDir.toUp, newDir.side, align)).bottom) {
+            // FIXED
+            newDir.toUp = toUp
+            newDir.side = side
+          }
+        }
+      } else if (!fit.bottom) {
+        if (toUp && side === 'top') {
+          // то ничего не делаем
+        } else {
+          newDir.toUp = true
+          if (side === 'bottom') newDir.side = 'top'
+          
+          if (!isFit(this.getPopupRect(newDir.toUp, newDir.side, align)).top) {
+            // FIXED
+            newDir.toUp = toUp
+            newDir.side = side
+          }
+        }
+      }
+      
+      if (!fit.left || !fit.right) {
+        const self = fit.left ? 'right' : 'left'
+        const other = fit.left ? 'left' : 'right'
+        
+        if (side === 'top' || side === 'bottom') {
+          if (align === 'center') {
+            newDir.align = self
+          }
+          if (align === self) {
+            newDir.align = other
+            if (!isFit(this.getPopupRect(newDir.toUp, newDir.side, newDir.align))[self]) {
+              // FIXED
+              newDir.align = 'center'
+            }
+          }
+          if (align === other) {
+            newDir.align = self
+            if (!isFit(this.getPopupRect(newDir.toUp, newDir.side, newDir.align))[other]) {
+              // FIXED
+              newDir.align = 'center'
+            }
+          }
+        } else {
+          newDir.side = 'bottom'
+          newDir.toUp = false
+          newDir = this.findPosition(...newDir, isFit(this.getPopupRect(...newDir)))
+        }
+      }
+      
+      return { ...newDir, }
     },
     debouncedCalcStyle: debounce(function() {
       this.calcStyle()
     }, 100),
-    getDefaultPosition() {
-      return getPosition(this.toUp, this.side, this.align, false,
-        this.element.getBoundingClientRect(), this.$refs.popup.offsetWidth, this.$refs.popup.offsetHeight)
+    getPopupRect(toUp, side, align) {
+      const popup = this.$refs.popup
+      return getPopupRect(toUp, side, align, this.element.getBoundingClientRect(), popup.offsetWidth, popup.offsetHeight)
     },
   },
 }
@@ -111,11 +179,13 @@ export default {
 
 <style lang="scss">
   html {
-    --n-popup-width: 300px;
+    --n-popup-width: 500px;
   }
 </style>
 <style lang="scss" scoped>
   .n-popup {
+    line-height: 1;
+    
     &.n-inline {
       display: inline-block;
     }

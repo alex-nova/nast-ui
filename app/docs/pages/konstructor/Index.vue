@@ -1,6 +1,5 @@
 <template>
   <n-card>
-    
     <konstructor :config="config" :data="data1">
       <template #int="{props}">
         <n-input v-bind="props" />
