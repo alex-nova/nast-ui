@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     asdasda sd asdasdas
-    <n-popup :open="open" target="index-toggle" to-up side="top" align="left">
+    <n-popup :open="open" target="index-toggle" up side="top" align="left" absolute>
       <a id="index-toggle" slot="action" icon-right="angle-down" @click="toggle">Opensajdhf ksadgf jkgahds skajdf</a>
       Dropdown content
     </n-popup>

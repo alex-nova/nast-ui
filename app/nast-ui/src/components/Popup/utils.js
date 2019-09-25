@@ -2,16 +2,16 @@
  *
  * @param {object} popupRect
  * @param {ClientRect} targetRect
- * @param {boolean} fixed
+ * @param {boolean} absolute
  * @return {{top: number, left: number}}
  */
-const getPosition = (popupRect, targetRect, fixed) => {
+const getPosition = (popupRect, targetRect, absolute) => {
   let top
   let left
   
-  if (fixed) {
-    top = popupRect.top
-    left = popupRect.left
+  if (absolute) {
+    top = popupRect.top + window.scrollY
+    left = popupRect.left + window.scrollX
   } else {
     top = popupRect.top - targetRect.bottom
     left = popupRect.left - targetRect.left
@@ -41,7 +41,7 @@ const isFit = (popupRect) => {
 
 /**
  *
- * @param {boolean} toUp
+ * @param {boolean} up
  * @param {string} side
  * @param {string} align
  * @param {ClientRect} targetRect
@@ -49,19 +49,19 @@ const isFit = (popupRect) => {
  * @param {int} popupHeight
  * @return {{top: number, left: number, bottom: number, right: number}}
  */
-const getPopupRect = (toUp, side, align, targetRect, popupWidth, popupHeight) => {
+const getPopupRect = (up, side, align, targetRect, popupWidth, popupHeight) => {
   let top = 0
   let left = 0
   let bottom = 0
   let right = 0
   
   if (side === 'top') {
-    top = targetRect.top - (toUp ? popupHeight : 0)
-    bottom = toUp ? targetRect.top : targetRect.top + popupHeight
+    top = targetRect.top - (up ? popupHeight : 0)
+    bottom = up ? targetRect.top : targetRect.top + popupHeight
   }
   if (side === 'bottom') {
-    top = targetRect.bottom - (toUp ? popupHeight : 0)
-    bottom = toUp ? targetRect.bottom : (targetRect.bottom + popupHeight)
+    top = targetRect.bottom - (up ? popupHeight : 0)
+    bottom = up ? targetRect.bottom : (targetRect.bottom + popupHeight)
   }
   if (side === 'top' || side === 'bottom') {
     if (align === 'right') {
@@ -86,8 +86,8 @@ const getPopupRect = (toUp, side, align, targetRect, popupWidth, popupHeight) =>
     right = targetRect.right + popupWidth
   }
   if (side === 'left' || side === 'right') {
-    top = toUp ? targetRect.bottom - popupHeight : targetRect.top
-    bottom = toUp ? targetRect.bottom : targetRect.top + popupHeight
+    top = up ? targetRect.bottom - popupHeight : targetRect.top
+    bottom = up ? targetRect.bottom : targetRect.top + popupHeight
   }
   
   bottom = window.innerHeight - bottom
