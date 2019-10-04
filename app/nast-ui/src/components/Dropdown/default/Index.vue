@@ -1,8 +1,14 @@
 <template>
-  <div v-if="s_open" ref="dropdown" v-click-outside="clickOutside" class="n-dropdown">
-    <n-popup :open.sync="s_open" :target="target">
+  <div ref="dropdown" class="n-dropdown">
+    <n-popup v-click-outside="clickOutside" :open.sync="s_open" inline>
+      <template #action>
+        <slot>open</slot>
+      </template>
       <div class="n-content">
-        <slot />
+        <template v-for="item in value">
+          <n-dropdown-group v-if="children" :key="item.value" :value="item" />
+          <n-dropdown-item v-else :key="item.value" :value="item" />
+        </template>
       </div>
     </n-popup>
   </div>
@@ -22,30 +28,30 @@ export default {
     }
   },
   computed: {
-    element() {
-      return document.getElementById(this.target)
+    action() {
+      return this.$slots.default[0].elm
     },
   },
   watch: {
     open(value) {
       this.s_open = value
-      value ?
-        this.element.removeEventListener('click', this.targetClick) :
-        this.element.addEventListener('click', this.targetClick)
     },
   },
   mounted() {
-    this.element.addEventListener('click', this.targetClick)
+    this.action.addEventListener('click', this.actionClick)
+  },
+  beforeDestroy() {
+    this.action.removeEventListener('click', this.actionClick)
   },
   methods: {
+    actionClick() {
+      this.toggle()
+    },
     toggle(valueProp) {
       const value = valueProp === undefined ? !this.s_open : valueProp
       
       this.s_open = value
       this.$emit('update:open', value)
-    },
-    targetClick() {
-      this.closeByTarget ? this.toggle() : this.toggle(true)
     },
     clickOutside(event) {
       if (this.s_open && !event.target.closest('#'+this.target) && this.closeByOutside) {

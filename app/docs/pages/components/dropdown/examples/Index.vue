@@ -1,6 +1,19 @@
 <template>
   <div>
-    <n-button id="index-toggle" icon-right="angle-down">Open</n-button>
-    <n-dropdown target="index-toggle">Dropdown content</n-dropdown>
+    <n-dropdown :value="data">
+      <n-button icon-right="angle-down">Open</n-button>
+    </n-dropdown>
   </div>
 </template>
+
+<script>
+export default {
+  data: () => ({
+    data: [
+      { title: 'Первый', value: 1, },
+      { title: 'Второй', value: 2, },
+      { title: 'Третий', value: 3, },
+    ],
+  }),
+}
+</script>

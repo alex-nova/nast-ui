@@ -12,7 +12,13 @@ export default {
   name: 'PageComponentsPopup',
   components: { ComponentPage, },
   data: () => ({
-    descriptions: {},
+    descriptions: {
+      open: '',
+      side: 'Возможные значения: top, bottom, left, right',
+      align: 'Возможные значения: left, right, center',
+      up: 'Направление открытия окна',
+      absolute: 'Компонент рендерится в теге body. Защита от родительского position: relative.',
+    },
     props,
   }),
   html() {

@@ -1,9 +1,11 @@
 <template>
-  <div class="sample-index">
-    <n-popup :open.sync="open">
-      <a slot="action" @click="toggle">Open</a>
+  <div class="sample-inline">
+    It
+    <n-popup :open.sync="open" inline>
+      <a slot="action" @click="toggle">can</a>
       <div class="content">Dropdown content</div>
     </n-popup>
+    be part of text
   </div>
 </template>
 
@@ -21,7 +23,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .sample-index {
+  .sample-inline {
     .content {
       padding: 30px;
     }

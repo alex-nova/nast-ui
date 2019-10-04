@@ -1,9 +1,12 @@
 <template>
   <div :class="['n-popup', {'n-inline': inline}]">
     <slot name="action" />
-    <div ref="wrapper" :class="['n-wrapper', {'n-absoluted': absolute},]">
-      <div v-if="s_open" ref="popup" class="n-popup-content" :style="style">
-        <slot />
+    <div ref="container" class="n-popup-container">
+      <div ref="wrapper" :class="['n-popup-wrapper', {'n-fixed': fixed}, ]">
+        <div class="n-dark" @click="s_close"></div>
+        <div v-if="s_open" ref="popup" class="n-popup-content" :style="style">
+          <slot />
+        </div>
       </div>
     </div>
   </div>
@@ -22,8 +25,7 @@ export default {
       s_open: Boolean(this.open),
       visible: true, // всегда равен s_open, с задержкой в 1 мс (за это время идет расчет позиции)
       dir: null, // { up, side, align, }
-      maxWidth: undefined,
-      // fixed: true, // TODO режим как на телефоне
+      fixed: false,
     }
   },
   computed: {
@@ -31,16 +33,18 @@ export default {
       return this.$slots.action[0].elm
     },
     style() {
-      let position = { top: 0, left: 0, }
-      if (this.dir && this.$refs.popup) {
+      const style = { }
+      if (this.fixed) {
+        style.maxHeight = `${window.innerHeight - 100}px`
+      } else if (this.dir && this.$refs.popup) {
         const popupRect = this.getPopupRect(this.dir.up, this.dir.side, this.dir.align)
         const pos = getPosition(popupRect, this.element.getBoundingClientRect(), this.absolute)
-        position = { top: `${pos.top}px`, left: `${pos.left}px`, }
+        style.top = `${pos.top}px`
+        style.left = `${pos.left}px`
       }
   
       return {
-        ...position,
-        maxWidth: this.maxWidth,
+        ...style,
         opacity: this.visible ? 1 : 0,
       }
     },
@@ -57,44 +61,63 @@ export default {
   },
   mounted() {
     this.onChange(this.s_open)
-
-    document.addEventListener('scroll', this.debouncedCalcStyle)
-    window.addEventListener('resize', this.debouncedCalcStyle)
   },
   beforeDestroy() {
     if (this.absolute) {
       this.togglePopupPlace(false)
     }
-    document.removeEventListener('scroll', this.debouncedCalcStyle)
-    window.removeEventListener('resize', this.debouncedCalcStyle)
+    if (this.s_open) {
+      document.removeEventListener('scroll', this.debouncedCalcStyle)
+      window.removeEventListener('resize', this.debouncedCalcStyle)
+    }
   },
   methods: {
+    s_close() {
+      this.$emit('close')
+      this.close()
+      this.$emit('update:open', false)
+      this['update:open'](false)
+    },
     onChange(value) {
       this.s_open = value
+      if (!value) {
+        this.toggleFixed(false)
+      }
       
       if (value) {
         this.$nextTick(() => {
-          this.calcStyle()
           if (this.absolute) {
             this.togglePopupPlace(true)
+            this.$nextTick(() => {
+              this.calcStyle()
+            })
+          } else {
+            this.calcStyle()
           }
           setTimeout(() => {
             this.visible = true
           }, 1)
         })
+        document.addEventListener('scroll', this.debouncedCalcStyle)
+        window.addEventListener('resize', this.debouncedCalcStyle)
       } else {
         this.togglePopupPlace(false)
         this.visible = false
+        document.removeEventListener('scroll', this.debouncedCalcStyle)
+        window.removeEventListener('resize', this.debouncedCalcStyle)
       }
     },
     togglePopupPlace(value) {
       if (this.$refs.popup) {
         if (value) {
-          document.body.append(this.$refs.popup)
+          document.body.append(this.$refs.wrapper)
         } else {
-          this.$refs.wrapper.append(this.$refs.popup)
+          this.$refs.container.append(this.$refs.wrapper)
         }
       }
+    },
+    toggleFixed(value) {
+      this.fixed = value
     },
     calcStyle() {
       if (this.s_open) {
@@ -107,24 +130,22 @@ export default {
             side: this.side,
             align: this.align,
           }
+          this.toggleFixed(false)
         } else {
           dir = this.findPosition(this.up, this.side, this.align, defaultFit)
+          if (dir === false) {
+            return
+          }
         }
         
         this.dir = dir
-        
-        if (this.$refs.popup.clientWidth > window.innerWidth - 10) {
-          this.maxWidth = `${window.innerWidth - 10}px`
-        } else {
-          this.maxWidth = undefined
-        }
       }
     },
     findPosition(up, side, align, fit) {
       let newDir = { up, side, align, }
       
       if (!fit.top && !fit.bottom) {
-        // FIXED
+        // ничего не делаем
       } else if (!fit.top) {
         // если итак смотрит вниз
         if (!up && side === 'bottom') {
@@ -134,9 +155,8 @@ export default {
           newDir.up = false
           if (side === 'top') newDir.side = 'bottom'
           
-          // если вниз не тоже поместился, то возвращаем назад
-          if (!isFit(this.getPopupRect(newDir.up, newDir.side, align)).bottom) {
-            // FIXED
+          // если вниз тоже не поместился, то ставим fixed
+          if (!isFit(this.getPopupRect(newDir.up, newDir.side, align))['top']) {
             newDir.up = up
             newDir.side = side
           }
@@ -148,8 +168,7 @@ export default {
           newDir.up = true
           if (side === 'bottom') newDir.side = 'top'
           
-          if (!isFit(this.getPopupRect(newDir.up, newDir.side, align)).top) {
-            // FIXED
+          if (!isFit(this.getPopupRect(newDir.up, newDir.side, align))['bottom']) {
             newDir.up = up
             newDir.side = side
           }
@@ -163,25 +182,29 @@ export default {
         if (side === 'top' || side === 'bottom') {
           if (align === 'center') {
             newDir.align = self
+            if (!isFit(this.getPopupRect(newDir.up, newDir.side, newDir.align))[other]) {
+              this.toggleFixed(true)
+              return false
+            }
           }
           if (align === self) {
             newDir.align = other
             if (!isFit(this.getPopupRect(newDir.up, newDir.side, newDir.align))[self]) {
-              // FIXED
-              newDir.align = 'center'
+              this.toggleFixed(true)
+              return false
             }
           }
           if (align === other) {
             newDir.align = self
             if (!isFit(this.getPopupRect(newDir.up, newDir.side, newDir.align))[other]) {
-              // FIXED
-              newDir.align = 'center'
+              this.toggleFixed(true)
+              return false
             }
           }
         } else {
           newDir.side = 'bottom'
           newDir.up = false
-          newDir = this.findPosition(...newDir, isFit(this.getPopupRect(...newDir)))
+          newDir = this.findPosition(newDir.up, newDir.side, newDir.align, isFit(this.getPopupRect(newDir.up, newDir.side, newDir.align)))
         }
       }
       
@@ -200,7 +223,7 @@ export default {
 
 <style lang="scss">
   html {
-    --n-popup-width: 500px;
+    --n-popup-width: 300px;
   }
 </style>
 <style lang="scss" scoped>
@@ -211,7 +234,7 @@ export default {
       display: inline-block;
     }
     
-    .n-wrapper {
+    .n-popup-container {
       position: absolute;
       &.n-absoluted {
         display: none;
@@ -219,14 +242,34 @@ export default {
     }
   }
   
-  .n-popup-content {
-    position: absolute;
-    width: var(--n-popup-width);
-    z-index: 110;
-    background: var(--content-bg);
-    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
-    border-radius: var(--border-radius);
-    padding: 25px;
-    opacity: 0;
+  .n-popup-wrapper {
+    .n-popup-content {
+      position: absolute;
+      width: var(--n-popup-width);
+      z-index: 110;
+      background: var(--content-bg);
+      box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+      border-radius: var(--border-radius);
+      opacity: 0;
+    }
+    &.n-fixed {
+      .n-popup-content {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+      }
+      .n-dark {
+        position: fixed;
+        cursor: pointer;
+        z-index: 109;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,.1);
+      }
+    }
   }
 </style>

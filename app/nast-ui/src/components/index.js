@@ -5,6 +5,8 @@ import Button from './Button/default/Index.vue'
 import Card from './Card/default/Index.vue'
 import Container from './Container/default/Index.vue'
 import Dropdown from './Dropdown/default/Index.vue'
+import DropdownItem from './Dropdown/_DropdownItem/default/Index.vue'
+import DropdownGroup from './Dropdown/_DropdownGroup/default/Index.vue'
 import Header from './Header/default/Index.vue'
 import Icon from './Icon/default/Index.vue'
 import Input from './Input/default/Index.vue'
@@ -28,6 +30,8 @@ export default {
     Vue.component('nCard', Card)
     Vue.component('nContainer', Container)
     Vue.component('nDropdown', Dropdown)
+    Vue.component('nDropdownItem', DropdownItem)
+    Vue.component('nDropdownGroup', DropdownGroup)
     Vue.component('nHeader', Header)
     Vue.component('nIcon', Icon)
     Vue.component('nInput', Input)
