@@ -1,18 +1,19 @@
 export default {
   props: {
-    item: { type: Object, default: () => ({}), }, // { title: '', route: '', target: '', click: () => {}, }
-    active: { type: [ Object, ], default: () => ({}), },
-    absolute: { type: Boolean, default: true, },
+    value: { type: Object, default: () => ({}), }, // { title: '', value: any, }
+    // active: { type: [ Object, ], default: () => ({}), },
+    // absolute: { type: Boolean, default: true, },
+    indexes: { type: Array, default: () => [], }, // массив индексов в массиве включая родителей
     
-    click: { type: Function, default: () => {}, },
+    click: { type: Function, default: (item, isGroup, event) => {}, },
   },
   
   computed: {
     props() {
       return {
         item: this.item,
-        active: this.active,
-        absolute: this.absolute,
+        // active: this.active,
+        // absolute: this.absolute,
       }
     },
     events() {

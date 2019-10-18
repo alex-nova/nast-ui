@@ -1,26 +1,21 @@
 <template>
   <div v-click-outside="clickOutside" :class="[ 'n-dropdown-group', {open: isOpen}, ]">
-    <n-navigation-item :value="value">
-      <template v-slot="{ value, }">
-        <slot :value="value" />
-      </template>
-    </n-navigation-item>
+    <n-dropdown-item :value="value" :indexes="indexes" @click="(...p) => s_click(...p, true)">
+      <template #default="{ item, }"><slot name="group" :item="item" /></template>
+    </n-dropdown-item>
     
-    <div v-show="isOpen" class="n-dropdown">
-      <template v-for="(child, i) in item.children">
+    <div v-if="isOpen" class="n-dropdown">
+      <template v-for="(child, i) in value.children">
         <template v-if="child.children">
-          <n-dropdown-group :key="child.title" :item="child" :active="active.children" :absolute="absolute" :click="click">
-            <template v-slot="{ item, }">
-              <slot :item="item" />
-            </template>
+          <n-dropdown-group :key="child.value" :item="child" :indexes="[ ...indexes, i, ]" @click="s_click">
+            <template #group="{ item, }"><slot name="group" :item="item" /></template>
+            <template #default="{ item, }"><slot :item="item" /></template>
           </n-dropdown-group>
         </template>
         <template v-else>
-          <n-navigation-item :key="child.title" :item="child" :click="itemClick" :active="isActive(i)">
-            <template v-slot="{ item, }">
-              <slot :item="item" />
-            </template>
-          </n-navigation-item>
+          <n-dropdown-item :key="child.value" :value="child" :indexes="[ ...indexes, i, ]" @click="s_click">
+            <template #default="{ item, }"><slot :item="item" /></template>
+          </n-dropdown-item>
         </template>
       </template>
     </div>
@@ -41,6 +36,18 @@ export default {
     }
   },
   methods: {
+    s_click(item, indexes, event, isGroup = false) {
+      this.$emit('click', item, indexes, event, isGroup)
+      this.click(item, indexes, event, isGroup)
+    },
+    toggle() {
+      this.isOpen = !this.isOpen
+    },
+    clickOutside() {
+      if (this.isOpen) {
+        this.isOpen = false
+      }
+    },
   },
 }
 </script>

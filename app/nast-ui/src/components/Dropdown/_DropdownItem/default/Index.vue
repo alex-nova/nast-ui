@@ -1,6 +1,6 @@
 <template>
   <div :class="[ 'n-dropdown-item', { 'n-active': active, }, ]" @click="s_click">
-    <slot :value="value">{{ value.title }}</slot>
+    <slot :item="value">{{ value.title }}</slot>
   </div>
 </template>
 
@@ -11,9 +11,9 @@ export default {
   name: 'NDropdownItem',
   mixins: [ props, ],
   methods: {
-    s_click(e) {
-      this.click(e)
-      this.$emit('click', e)
+    s_click(event) {
+      this.click(this.value, this.indexes, event)
+      this.$emit('click', this.value, this.indexes, event)
     },
   },
 }
@@ -21,6 +21,14 @@ export default {
 
 <style lang="scss" scoped>
   .n-dropdown-item {
-    padding: 5px 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    
+    &.active {
+      background: var(--primaty-t-8);
+    }
+    &:hover {
+      background: var(--primary-t-10);
+    }
   }
 </style>
