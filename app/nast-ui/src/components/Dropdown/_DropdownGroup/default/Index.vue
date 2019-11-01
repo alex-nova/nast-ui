@@ -1,19 +1,22 @@
 <template>
   <div v-click-outside="clickOutside" :class="[ 'n-dropdown-group', {open: isOpen}, ]">
-    <n-dropdown-item :value="value" :indexes="indexes" @click="(...p) => s_click(...p, true)">
+    <n-dropdown-item :value="value" :indexes="indexes"
+                     :item-title="itemTitle" :item-value="itemValue" @click="(...p) => s_click(...p, true)">
       <template #default="{ item, }"><slot name="group" :item="item" /></template>
     </n-dropdown-item>
     
     <div v-if="isOpen" class="n-dropdown">
       <template v-for="(child, i) in value.children">
         <template v-if="child.children">
-          <n-dropdown-group :key="child.value" :item="child" :indexes="[ ...indexes, i, ]" @click="s_click">
+          <n-dropdown-group :key="child[itemValue]" :item="child" :indexes="[ ...indexes, i, ]"
+                            :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
             <template #group="{ item, }"><slot name="group" :item="item" /></template>
             <template #default="{ item, }"><slot :item="item" /></template>
           </n-dropdown-group>
         </template>
         <template v-else>
-          <n-dropdown-item :key="child.value" :value="child" :indexes="[ ...indexes, i, ]" @click="s_click">
+          <n-dropdown-item :key="child[itemValue]" :value="child" :indexes="[ ...indexes, i, ]"
+                           :item-title="itemTitle" :item-value="itemValue" @click="s_click">
             <template #default="{ item, }"><slot :item="item" /></template>
           </n-dropdown-item>
         </template>

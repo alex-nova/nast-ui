@@ -1,6 +1,6 @@
 <template>
   <div :class="[ 'n-dropdown-item', { 'n-active': active, }, ]" @click="s_click">
-    <slot :item="value">{{ value.title }}</slot>
+    <slot :item="value">{{ value[itemTitle] }}</slot>
   </div>
 </template>
 
@@ -24,10 +24,11 @@ export default {
     padding: 12px 20px;
     cursor: pointer;
     
-    &.active {
-      background: var(--primaty-t-8);
+    &.n-active {
+      background: var(--primary);
+      color: var(--primary-text);
     }
-    &:hover {
+    &:not(.n-active):hover {
       background: var(--primary-t-10);
     }
   }

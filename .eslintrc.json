@@ -34,6 +34,7 @@
     "no-param-reassign": 0,
     "linebreak-style": 0,
     "quote-props": 0,
+    "vue/html-closing-bracket-newline": 0,
     "vue/max-attributes-per-line": 0,
     "vue/html-self-closing": 0,
     "vue/require-prop-types": 0,

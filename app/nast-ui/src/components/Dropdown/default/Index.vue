@@ -7,27 +7,35 @@
       <div class="n-content">
         <div v-show="parents.length" class="n-parents">
           <template v-for="(item, i) in parents">
-            <n-dropdown-item :key="item.value" :value="item" @click="parentClick(i)">
+            <n-dropdown-item :key="item[itemValue]" :value="item" @click="parentClick(i)">
               <div class="n-parent-item">
                 <div v-for="n in i" :key="n" class="n-shift" />
                 <n-icon icon="arrow-left" />
-                <span class="n-text">{{ item.title }}</span>
+                <span class="n-text">{{ item[itemTitle] }}</span>
               </div>
             </n-dropdown-item>
           </template>
         </div>
-        <div class="n-items">
-          <template v-for="(item, i) in s_data">
-            <n-dropdown-group v-if="isArray(item.children) && item.children" :key="item.value" :value="item" :indexes="[ i, ]" @click="s_click">
-              <template #group>
-                <div class="n-group-item">
-                  <span class="n-text">{{ item.title }}</span>
-                  <n-icon icon="angle-down" />
-                </div>
-              </template>
-            </n-dropdown-group>
-            <n-dropdown-item v-else :key="item.value" :value="item" :indexes="[ i, ]" @click="s_click" />
+        <div class="n-items" @scroll="s_scroll">
+          <div v-if="loading" class="n-loading">Loading...</div>
+          <template v-if="s_data.length">
+            <template v-for="(item, i) in s_data">
+              <n-dropdown-group v-if="isGroup(item)" :key="item[itemValue]" :value="item" :indexes="[ i, ]"
+                                :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
+                <template #group>
+                  <div class="n-group-item">
+                    <span class="n-text">{{ item[itemTitle] }}</span>
+                    <n-icon icon="angle-down" />
+                  </div>
+                </template>
+              </n-dropdown-group>
+              <n-dropdown-item v-else :key="item[itemValue]" :value="item" :indexes="[ i, ]" :active="isActive(item)"
+                               :item-title="itemTitle" :item-value="itemValue" @click="s_click" />
+            </template>
           </template>
+          <div v-else-if="!loading" class="n-empty">
+            No data
+          </div>
         </div>
       </div>
     </n-popup>
@@ -47,9 +55,12 @@ export default {
     return {
       s_open: this.open,
       s_data: this.data,
+      s_value: this.calcValue(this.value, this.fullValue),
       selected: [],
       parents: [], // открытые на данный момент группы
       indexes: [],
+      loading: false,
+      page: 0,
     }
   },
   computed: {
@@ -60,12 +71,29 @@ export default {
   watch: {
     open(value) {
       this.s_open = value
+      if (value) {
+        this.update()
+      }
     },
     data(value) {
       this.s_data = value
     },
+    value(value) {
+      this.s_value = this.calcValue(value, null)
+    },
+    fullValue(value) {
+      this.s_value = this.calcValue(null, value)
+    },
+    s_data(value) {
+      if (this.load) {
+      
+      }
+    },
   },
   mounted() {
+    if (this.s_open) {
+      this.update()
+    }
     this.action.addEventListener('click', this.actionClick)
   },
   beforeDestroy() {
@@ -75,19 +103,18 @@ export default {
     actionClick() {
       this.toggle()
     },
-    s_click(item, indexes, event, isGroup) {
-      this.$emit('click', item, indexes, isGroup, event)
-      this.click(item, indexes, isGroup, event)
-      
-      if (isGroup) {
-        this.groupClick(item, indexes)
+    calcValue(value, fullValue) {
+      if (this.multi) {
+        return value || fullValue.map((i) => i[this.itemValue])
       } else {
-        this.s_select(item, indexes)
+        return value || fullValue[this.itemValue]
       }
     },
     toggle(valueProp) {
       const value = valueProp === undefined ? !this.s_open : valueProp
-      
+      if (value) {
+        this.update()
+      }
       this.s_open = value
       this.$emit('update:open', value)
     },
@@ -97,28 +124,99 @@ export default {
       }
     },
     parentClick(index) {
-      this.s_data = index === 0 ? this.data : this.parents[index-1].children
       this.parents.length = index
       this.indexes.length = index
+      
+      if (this.load) {
+        this.update()
+      } else {
+        this.s_data = index === 0 ? this.data : this.parents[index-1][this.itemChildren]
+      }
     },
     groupClick(item, indexes) {
       this.parents = [ ...this.parents, item, ]
       this.indexes = [ ...this.indexes, indexes[0], ]
+      
+      if (item.children === true && this.load) {
+        this.update()
+      } else {
+        this.s_data = item[this.itemChildren]
+      }
+    },
+    isGroup(item) {
+      return (isArray(item[this.itemChildren]) && item[this.itemChildren].length) || item[this.itemChildren] === true
+    },
+    isActive(item) {
+      if (this.multi) {
+        return this.s_value.includes(item[this.itemValue])
+      } else {
+        return item[this.itemValue] === this.s_value
+      }
+    },
+    s_click(item, indexes, event, isGroup) {
+      this.$emit('click', item, indexes, isGroup, event)
+      this.click(item, indexes, isGroup, event)
     
-      this.s_data = item.children
+      if (isGroup) {
+        this.groupClick(item, indexes)
+      } else {
+        this.s_select(item, indexes)
+      }
     },
     s_select(item, indexes) {
-      const items = [
-        ...this.parents,
-        item,
-      ]
+      let value = item[this.itemValue]
+      let selected = item
       
-      const allIndexes = [ ...this.indexes, indexes[0], ]
+      if (this.multi) {
+        if (this.s_value.includes(item[this.itemValue])) {
+          value = this.s_value.filter((i) => i !== item[this.itemValue])
+          selected = this.fullValue && this.fullValue.filter((i) => i[this.itemValue] !== item[this.itemValue])
+        } else {
+          value = [ ...this.s_value, item[this.itemValue], ]
+          selected = this.fullValue && [ ...this.fullValue, item, ]
+        }
+      }
       
-      this.$emit('select', item, items, allIndexes)
-      this.select(item)
-      
-      console.log('select', item, items, allIndexes)
+      this.$emit('update:value', value)
+      this['update:value'](value)
+      this.$emit('update:fullValue', selected)
+      this['update:fullValue'](selected)
+      this.$emit('select', item, this.parents)
+      this.select(item, this.parents)
+    },
+    s_scroll(event) {
+      const target = event.target
+      if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
+        this.page = this.page + 1
+        this.update()
+      }
+      this.$emit('scroll', event)
+      this.scroll(event)
+    },
+    updateAdd(page) {
+    
+    },
+    update() {
+      if (this.load) {
+        const params = {
+          page: this.page,
+        }
+        const promise = this.load(this.parents[this.parents.length - 1], params)
+        if (promise) {
+          this.loading = true
+          if (this.page === 0) {
+            this.s_data = []
+          }
+          promise.then((response) => {
+            if (this.page) {
+              this.s_data = this.s_data.concat(response.data)
+            } else {
+              this.s_data = response.data
+            }
+            this.loading = false
+          })
+        }
+      }
     },
     isArray,
   },
@@ -146,6 +244,14 @@ export default {
         padding: 5px 0;
         max-height: 300px;
         overflow-y: auto;
+      }
+  
+      .n-loading {
+        padding: 30px 5px;
+      }
+  
+      .n-empty {
+        padding: 30px 5px;
       }
       
       .n-parent-item, .n-group-item {
