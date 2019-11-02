@@ -9,6 +9,7 @@ export default {
       dropdown: { route: 'dropdown', parent: 'components', },
       input: { route: 'input', parent: 'components', },
       popup: { route: 'popup', parent: 'components', },
+      progress: { route: 'progress', parent: 'components', },
   
       directives: { icon: 'sitemap', route: 'directives', parent: 'index', },
       konstructor: { icon: 'sitemap', route: 'konstructor', parent: 'index', },
@@ -23,6 +24,7 @@ export default {
       ], },
       { name: 'baseComponentsGroup', icon: 'folder', children: [
         { name: 'popup', },
+        { name: 'progress', },
       ], },
       { name: 'directives', },
       { name: 'konstructor', },
@@ -40,6 +42,7 @@ export default {
       
       baseComponentsGroup: 'Базовые компоненты',
       popup: 'Popup',
+      progress: 'Progress',
     },
   },
   

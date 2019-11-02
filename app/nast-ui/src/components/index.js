@@ -16,6 +16,7 @@ import Navigation from './Navigation/default/Index.vue'
 import NavigationGroup from './Navigation/_NavigationGroup/default/Index.vue'
 import NavigationItem from './Navigation/_NavigationItem/default/Index.vue'
 import Popup from './Popup/default/Index.vue'
+import Progress from './Progress/default/Index.vue'
 import Table from './Table/default/Index.vue'
 import Tabs from './Tabs/default/Index.vue'
 import Typography from './Typography/default/Index.vue'
@@ -41,6 +42,7 @@ export default {
     Vue.component('nNavigationGroup', NavigationGroup)
     Vue.component('nNavigationItem', NavigationItem)
     Vue.component('nPopup', Popup)
+    Vue.component('nProgress', Progress)
     Vue.component('nTable', Table)
     Vue.component('nTabs', Tabs)
     Vue.component('nTypography', Typography)
