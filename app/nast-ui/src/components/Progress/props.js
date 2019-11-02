@@ -1,18 +1,39 @@
 export default {
   props: {
-    loading: { type: Boolean, default: false, },
+    value: { type: Number, default: 0, },
     color: { type: String, default: 'primary', },
-    size: { type: String, default: 'md', },
-    hidden: { type: Boolean, default: true, },
+    hidden: { type: Boolean, default: false, },
+    speed: { type: Number, default: 200, }, // milliseconds
+  
+    started: { type: Function, default: () => {}, },
+    paused: { type: Function, default: (value) => {}, },
+    ended: { type: Function, default: () => {}, },
+    'update:value': { type: Function, default: () => {}, },
   },
   
   computed: {
     props() {
       return {
-        loading: this.loading,
+        value: this.value,
         color: this.color,
-        size: this.color,
-        hidden: this.color,
+        hidden: this.hidden,
+        speed: this.speed,
+      }
+    },
+    events() {
+      return {
+        started: this.started,
+        paused: this.paused,
+        ended: this.ended,
+        'update:value': this['update:value'],
+      }
+    },
+    functions() {
+      return {
+        start: this.start,
+        pause: this.pause,
+        end: this.end,
+        reset: this.reset,
       }
     },
   },

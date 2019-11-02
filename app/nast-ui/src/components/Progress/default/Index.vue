@@ -1,131 +1,126 @@
 <template>
-  <div :class="['preloader', color, size, {hidden}]">
-    <div :class="['active', {reset: isReset}]" :style="activeStyle"></div>
+  <div :class="[ 'n-progress', color, {'n-hidden': hidden}, ]">
+    <div :class="[ 'n-content', {'n-ending': ending}, ]" :style="contentStyle"></div>
   </div>
 </template>
 
 <script>
-import model from './../props'
+import props from './../props'
 
 export default {
   name: 'NProgress',
-  mixins: [ model, ],
+  mixins: [ props, ],
   data() {
     return {
-      state: 0,
-      isReset: false,
-      transitionSpeed: 200,
+      s_value: this.value,
+      ending: false,
+      interval: null,
     }
   },
   computed: {
-    activeStyle() {
+    contentStyle() {
       return {
-        width: this.state + '%',
+        width: (this.s_value * 100) + '%',
+        '--n-auto-progress-speed': `${this.speed}ms`,
       }
     },
-    speed() {
-      return (100 - this.state) / 20
+    step() {
+      return (1 - this.s_value) / 40
     },
   },
   watch: {
-    loading(value) {
-      if (value) {
-        this.start()
-      } else {
-        this.stop()
-      }
+    value(value) {
+      this.s_value = value
     },
-  },
-  mounted() {
-    if (this.loading) {
-      this.start()
-    }
   },
   methods: {
     start() {
-      if (this.loading) {
-        $n.delay(() => {
-          this.state += this.speed
-          this.start()
-        }, this.transitionSpeed)
-      } else {
-        this.stop()
+      this.started()
+      this.$emit('started')
+      if (this.s_value === 1) {
+        this.reset(0)
+      }
+      
+      this.interval = setInterval(() => {
+        if (this.s_value >= 1) {
+          this.end()
+        } else {
+          this.change(this.s_value + this.step)
+        }
+      }, this.speed)
+    },
+    pause(silent = false) {
+      if (!silent) {
+        this.paused(this.value)
+        this.$emit('paused', this.value)
+      }
+      
+      if (this.interval) {
+        clearInterval(this.interval)
       }
     },
-    stop() {
-      this.state = 100
-      $n.delay(() => {
-        this.reset()
-        this.$emit('stopped')
-      }, this.transitionSpeed + 50)
+    end() {
+      this.pause(true)
+      this.$nextTick(() => {
+        this.change(1)
+        setTimeout(() => {
+          this.ended()
+          this.$emit('ended')
+        }, this.speed)
+      })
     },
     reset() {
-      this.isReset = true
-      this.state = 0
-      $n.delay(() => {
-        this.isReset = false
-      }, 100)
+      this.pause(true)
+      this.ending = true
+      this.change(0)
+      setTimeout(() => {
+        this.ending = false
+      }, 10)
+    },
+    change(value) {
+      this.s_value = value
+      this['update:value'](value)
+      this.$emit('update:value', value)
     },
   },
 }
 </script>
 
+<style lang="scss" src="./../../../_utils/cssVariables.scss"></style>
+<style lang="scss">
+  html {
+    --n-progress-height: 5px;
+  }
+</style>
 <style lang="scss" scoped>
-  $n-gray-200:      #e9ecef !default;
-  $n-default:       $n-gray-200 !default;
-  $n-primary:       #843ea1 !default;
-  $n-success:       #28a745 !default;
-  $n-info:          #17a2b8 !default;
-  $n-warning:       #ffc107 !default;
-  $n-danger:        #dc3545 !default;
-  $n-colors: (
-    "default":      $n-default,
-    "primary":      $n-primary,
-    "success":      $n-success,
-    "info":         $n-info,
-    "warning":      $n-warning,
-    "danger":       $n-danger,
-  ) !default;
+  @import "../../../_utils/scssVariables";
   
+  .n-progress {
+    position: relative;
+    height: var(--n-progress-height);
   
-  $transition-speed: 200ms;
-  $sizes: (
-    xs: .125em,
-    sm: .1875em,
-    md: .25em,
-    lg: .375em,
-    xl: .625em,
-  ) !default;
-  
-  @each $color, $value in $n-colors {
-    .preloader.#{$color} {
-      background: var(--primary-t-2);
-      .active {
-        background: var(--primary);
+    @each $color, $value in $colors {
+      &.#{$color} {
+        &:not(.n-hidden) {
+          background: var(--primary-t-10);
+        }
+        .n-content {
+          background: var(--primary);
+        }
       }
     }
-  }
-  @each $size, $value in $sizes {
-    .preloader.#{$size} {
-      height: $value;
-    }
-  }
   
-  .preloader {
-    position: relative;
-    
-    &.hidden {
-      background: transparent;
-    }
-    
-    .active {
+    .n-content {
       height: 100%;
       position: absolute;
-      transition: all $transition-speed linear;
-      
-      &.reset {
-        transition: none;
+      border-radius: var(--border-radius);
+      transition: all var(--n-auto-progress-speed) linear;
+    
+      &.n-ending {
+        transition: none !important;
       }
     }
+    
   }
+  
 </style>

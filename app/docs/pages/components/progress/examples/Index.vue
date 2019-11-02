@@ -1,6 +1,7 @@
 <template>
   <div>
-    <n-progress :loading="loading" />
+    {{ percent }}%
+    <n-progress ref="progress" :value.sync="status" />
     <br />
     <n-button @click="load">go</n-button>
   </div>
@@ -9,14 +10,21 @@
 <script>
 export default {
   data: () => ({
-    loading: false,
+    status: 0,
   }),
+  computed: {
+    percent() {
+      return Math.ceil(this.status * 100)
+    },
+  },
   methods: {
     load() {
-      this.loading = true
+      this.$refs.progress.start()
+      
       setTimeout(() => {
-        this.loading = false
-      }, 3000)
+        this.$refs.progress.end()
+        this.status = 0
+      }, 4000)
     },
   },
 }

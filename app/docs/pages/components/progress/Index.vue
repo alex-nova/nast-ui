@@ -13,9 +13,14 @@ export default {
   components: { ComponentPage, },
   data: () => ({
     descriptions: {
+      speed: 'Animation speed in milliseconds',
     },
     props,
-    todo: [],
+    todo: [
+      'Добавить описания полей',
+      'Добавить примеры использования',
+      'Добавить ожидаемое время загрузки (для более точного движения полосы)',
+    ],
   }),
   html() {
     return {
