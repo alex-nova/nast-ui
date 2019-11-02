@@ -1,6 +1,6 @@
 <template>
   <div class="page-components-button">
-    <component-page :props="props.props" :descriptions="descriptions" path="components/input/examples" />
+    <component-page :props="props" :descriptions="descriptions" :todo="todo" path="components/input/examples" />
   </div>
 </template>
 
@@ -16,6 +16,7 @@ export default {
       type: 'text|password|number|textarea',
     },
     props,
+    todo: [],
   }),
   html() {
     return {

@@ -1,6 +1,6 @@
 <template>
   <div class="page-components-button">
-    <component-page :props="props.props" :descriptions="descriptions" path="components/button/examples" />
+    <component-page :props="props" :descriptions="descriptions" :todo="todo" path="components/button/examples" />
   </div>
 </template>
 
@@ -25,6 +25,7 @@ export default {
       iconRight: '',
     },
     props,
+    todo: [],
   }),
   html() {
     return {

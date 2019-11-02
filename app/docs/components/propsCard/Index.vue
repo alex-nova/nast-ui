@@ -2,7 +2,7 @@
   <div class="component-props-card">
     <n-card>
       <h3 slot="header">Props</h3>
-      <n-table :data="data" :columns="columns" headless>
+      <n-table :data="dataProps" :columns="columns" headless>
         <template #name="{ item, }">
           <div class="title">name</div>
           <n-link :to="getAnchor(item.name)">{{ item.name }}</n-link>
@@ -13,7 +13,30 @@
         </template>
         <template #default="{ item, }">
           <div class="title">default value</div>
-          {{ item.default }}
+          <source-code v-if="item.type === 'function'" :code="item.default" language="javascript" />
+          <template v-else>{{ item.default }}</template>
+        </template>
+        <template #desc="{ item, }">
+          <div class="title">description</div>
+          {{ item.desc }}
+        </template>
+      </n-table>
+    </n-card>
+    <n-card>
+      <h3 slot="header">Events</h3>
+      <n-table :data="dataEvents" :columns="columns" headless>
+        <template #name="{ item, }">
+          <div class="title">name</div>
+          <n-link :to="getAnchor(item.name)">{{ item.name }}</n-link>
+        </template>
+        <template #type="{ item, }">
+          <div class="title">type</div>
+          {{ item.type }}
+        </template>
+        <template #default="{ item, }">
+          <div class="title">default value</div>
+          <source-code v-if="item.type === 'function'" :code="item.default" language="javascript" />
+          <template v-else>{{ item.default }}</template>
         </template>
         <template #desc="{ item, }">
           <div class="title">description</div>
@@ -25,10 +48,13 @@
 </template>
 
 <script>
+import SourceCode from '../sourceCode/Index'
+
 export default {
   name: 'PropsCard',
+  components: { SourceCode, },
   props: {
-    props: { type: Object, default: () => ({}), }, // component props
+    props: { type: Object, default: () => ({}), }, // { props: {}, computed: {}, }
     descriptions: { type: Object, default: () => ({}), }, // { prop1: '', ... }
     path: { type: String, default: '', }, // path to example files
   },
@@ -42,13 +68,30 @@ export default {
     anchors: {},
   }),
   computed: {
-    data() {
-      return $n.reduce(this.props, (result, item, name) => {
+    dataProps() {
+      return $n.reduce(this.props.computed.props(), (result, value, name) => {
+        const item = this.props.props[name]
+        if (item) {
+          result.push({
+            name,
+            desc: this.descriptions[name],
+            type: this.typeToString(item.type),
+            default: this.defaultToString(item.default, item.type),
+          })
+        } else {
+          $debug.error(`Nast docs: '${name}' property doesn't exist!`)
+        }
+        return result
+      }, [])
+    },
+    dataEvents() {
+      return $n.reduce(this.props.computed.events(), (result, value, name) => {
+        const item = this.props.props[name]
         result.push({
           name,
           desc: this.descriptions[name],
           type: this.typeToString(item.type),
-          default: this.defaultToString(item.default),
+          default: this.defaultToString(item.default, item.type),
         })
         return result
       }, [])
@@ -71,13 +114,16 @@ export default {
       const normalize = (i) => i.name.toLowerCase()
       return $n.isArray(type) ? `[${type.map(normalize).join(', ')}]` : normalize(type)
     },
-    defaultToString(def) {
+    defaultToString(def, type) {
       if ($n.isFunction(def)) {
-        const r = def()
-        if (r === undefined) {
-          return '() => {}'
+        if (type === Function) {
+          let func = def.toString()
+          func = func.replace('function _default', '')
+          func = func.replace(') {', ') => {')
+          func = func.replace(/\n[ ]{6}/g, '\n')
+          return func
         } else {
-          return r
+          return def()
         }
       }
       return JSON.stringify(def)

@@ -1,6 +1,6 @@
 <template>
   <div class="page-components-dropdown">
-    <component-page :props="props.props" :descriptions="descriptions" path="components/dropdown/examples" />
+    <component-page :props="props" :descriptions="descriptions" :todo="todo" path="components/dropdown/examples" />
   </div>
 </template>
 
@@ -15,6 +15,9 @@ export default {
     descriptions: {
     },
     props,
+    todo: [
+      'Надо добавить примеры использования',
+    ],
   }),
   html() {
     return {

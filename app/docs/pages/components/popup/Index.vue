@@ -1,6 +1,6 @@
 <template>
   <div class="page-components-popup">
-    <component-page :props="props.props" :descriptions="descriptions" path="components/popup/examples" />
+    <component-page :props="props" :descriptions="descriptions" :todo="todo" path="components/popup/examples" />
   </div>
 </template>
 
@@ -20,6 +20,7 @@ export default {
       absolute: 'Компонент рендерится в теге body. Защита от родительского position: relative.',
     },
     props,
+    todo: [],
   }),
   html() {
     return {

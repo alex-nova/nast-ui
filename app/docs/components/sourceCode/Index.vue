@@ -4,6 +4,8 @@
 
 <script>
 import hljs from 'highlight.js'
+import javascript from 'highlight.js/lib/languages/javascript'
+hljs.registerLanguage('javascript', javascript)
 
 export default {
   name: 'SourceCode',
@@ -21,4 +23,8 @@ export default {
 
 <style lang="scss" scoped>
   @import "~highlight.js/styles/darcula.css";
+  
+  .component-source-code {
+    margin: 0;
+  }
 </style>

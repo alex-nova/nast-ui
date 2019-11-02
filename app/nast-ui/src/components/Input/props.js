@@ -42,21 +42,26 @@ export default {
         name: this.name,
         title: this.title,
         value: this.value,
+        type: this.type,
         placeholder: this.placeholder,
         disabled: this.disabled,
         text: this.text,
         inline: this.inline,
+        
         icon: this.icon,
+        iconInner: this.iconInner,
         iconRight: this.iconRight,
+        iconRightInner: this.iconRightInner,
         loading: this.loading,
-        active: this.active,
-        animate: this.animate,
+        
+        // active: this.active,
         primary: this.primary,
         success: this.success,
         warning: this.warning,
         danger: this.danger,
         secondary: this.secondary,
         tertiary: this.tertiary,
+        animate: this.animate,
       }
     },
     events() {
