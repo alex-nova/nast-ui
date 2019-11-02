@@ -16,7 +16,7 @@
             </n-dropdown-item>
           </template>
         </div>
-        <div class="n-items" @scroll="s_scroll">
+        <div ref="items" class="n-items" @scroll="s_scroll">
           <div v-if="loading" class="n-loading">Loading...</div>
           <template v-if="s_data.length">
             <template v-for="(item, i) in s_data">
@@ -61,6 +61,7 @@ export default {
       indexes: [],
       loading: false,
       page: 0,
+      total: null,
     }
   },
   computed: {
@@ -83,11 +84,6 @@ export default {
     },
     fullValue(value) {
       this.s_value = this.calcValue(null, value)
-    },
-    s_data(value) {
-      if (this.load) {
-      
-      }
     },
   },
   mounted() {
@@ -184,39 +180,57 @@ export default {
       this.$emit('select', item, this.parents)
       this.select(item, this.parents)
     },
-    s_scroll(event) {
-      const target = event.target
+    s_scroll(event = null) {
+      const target = this.$refs.items
       if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
-        this.page = this.page + 1
-        this.update()
+        this.loadNextPage()
       }
-      this.$emit('scroll', event)
-      this.scroll(event)
+      // Don't fire event if s_scroll called from code
+      if (event) {
+        this.$emit('scroll', event)
+        this.scroll(event)
+      }
     },
-    updateAdd(page) {
-    
-    },
-    update() {
-      if (this.load) {
-        const params = {
-          page: this.page,
+    loadNextPage() {
+      if (this.total !== null) {
+        if ((this.page + 1) * this.size < this.total) {
+          this.s_load(this.page + 1)
         }
-        const promise = this.load(this.parents[this.parents.length - 1], params)
+      }
+    },
+    s_load(page) {
+      if (this.load) {
+        const params = { page, size: this.size, }
+        const promise = this.load(params, this.parents[this.parents.length - 1])
+        
         if (promise) {
           this.loading = true
-          if (this.page === 0) {
+          this.page = page
+          
+          if (page === 0) {
             this.s_data = []
           }
+          
           promise.then((response) => {
-            if (this.page) {
-              this.s_data = this.s_data.concat(response.data)
-            } else {
-              this.s_data = response.data
-            }
+            const data = this.getContent(response)
+            this.total = this.getTotalCount(response)
             this.loading = false
+            
+            if (this.page) {
+              this.s_data = this.s_data.concat(data)
+            } else {
+              this.s_data = data
+            }
+            
+            this.$nextTick(() => {
+              this.s_scroll()
+            })
           })
         }
       }
+    },
+    update() {
+      this.s_load(0)
     },
     isArray,
   },

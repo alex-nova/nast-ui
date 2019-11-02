@@ -3,7 +3,7 @@
     <div v-for="item in selectedFull" :key="item.value">{{ item.title }}</div>
     <!--    <div>{{ selectedFull.title }}</div>-->
     
-    <n-dropdown :full-value.sync="selectedFull" multi :load="load">
+    <n-dropdown :full-value.sync="selectedFull" multi :load="load" :size="3">
       <n-button icon-right="angle-down">Open</n-button>
     </n-dropdown>
   </div>
@@ -37,32 +37,32 @@ export default {
         { title: 'Восьмой специалист', value: 17, },
         { title: 'Девятый специалист', value: 18, },
         { title: 'Десятый специалист', value: 23, },
-        { title: 'Десятый специалист', value: 24, },
-        { title: 'Десятый специалист', value: 25, },
-        { title: 'Десятый специалист', value: 26, },
-        { title: 'Десятый специалист', value: 27, },
-        { title: 'Десятый специалист', value: 28, },
-        { title: 'Десятый специалист', value: 29, },
-        { title: 'Десятый специалист', value: 30, },
-        { title: 'Десятый специалист', value: 31, },
-        { title: 'Десятый специалист', value: 32, },
-        { title: 'Десятый специалист', value: 33, },
-        { title: 'Десятый специалист', value: 34, },
-        { title: 'Десятый специалист', value: 35, },
-        { title: 'Десятый специалист', value: 36, },
-        { title: 'Десятый специалист', value: 37, },
-        { title: 'Десятый специалист', value: 38, },
-        { title: 'Десятый специалист', value: 39, },
-        { title: 'Десятый специалист', value: 40, },
+        { title: 'Десятый специалист1', value: 24, },
+        { title: 'Десятый специалист2', value: 25, },
+        { title: 'Десятый специалист3', value: 26, },
+        { title: 'Десятый специалист4', value: 27, },
+        { title: 'Десятый специалист5', value: 28, },
+        { title: 'Десятый специалист6', value: 29, },
+        { title: 'Десятый специалист7', value: 30, },
+        { title: 'Десятый специалист8', value: 31, },
+        { title: 'Десятый специалист9', value: 32, },
+        { title: 'Десятый специалист10', value: 33, },
+        { title: 'Десятый специалист11', value: 34, },
+        { title: 'Десятый специалист12', value: 35, },
+        { title: 'Десятый специалист13', value: 36, },
+        { title: 'Десятый специалист14', value: 37, },
+        { title: 'Десятый специалист15', value: 38, },
+        { title: 'Десятый специалист16', value: 39, },
+        { title: 'Десятый специалист17', value: 40, },
       ], },
       { title: 'Директор Департамента', value: 21, },
       { title: 'Заместитель Директора Департамента', value: 22, },
     ],
   }),
   methods: {
-    load(parent, params = {}) {
+    load(params, parent) {
       const page = params.page
-      const size = 3
+      const size = params.size
       
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -77,6 +77,8 @@ export default {
             result = this.data
           }
           
+          const total = result.length
+          
           if (page !== undefined) {
             result = result.slice(page * size, (page + 1) * size)
           }
@@ -86,7 +88,7 @@ export default {
             return i
           })
           
-          resolve({ data: result, })
+          resolve({ data: result, pagination: { total, }, })
         }, 500)
       })
     },
