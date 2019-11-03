@@ -6,3 +6,13 @@
     <n-button round icon="user" color="primary" />
   </n-items>
 </template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

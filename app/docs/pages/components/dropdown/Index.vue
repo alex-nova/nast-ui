@@ -12,13 +12,18 @@ export default {
   name: 'PageComponentsDropdown',
   components: { ComponentPage, },
   data: () => ({
-    descriptions: {
-    },
     props,
-    todo: [
-      'Надо добавить примеры использования',
-    ],
   }),
+  computed: {
+    descriptions() {
+      return {}
+    },
+    todo() {
+      return [
+        'Надо добавить примеры использования',
+      ]
+    },
+  },
   html() {
     return {
       title: 'Dropdown',

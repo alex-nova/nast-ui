@@ -12,21 +12,27 @@ export default {
   name: 'PageComponentsButton',
   components: { ComponentPage, },
   data: () => ({
-    descriptions: {
-      color: 'Цвета кнопки. Возможные значения: default, primary, secondary, tertiary, success, danger.',
-      round: 'Закгругленный бордер',
-      flat: 'Кнопка без фона',
-      outline: 'outline',
-      type: 'type',
-      disabled: '',
-      wide: '',
-      loading: '',
-      icon: '',
-      iconRight: '',
-    },
     props,
-    todo: [],
   }),
+  computed: {
+    descriptions() {
+      return {
+        color: 'Цвета кнопки. Возможные значения: default, primary, secondary, tertiary, success, danger.',
+        round: 'Закгругленный бордер',
+        flat: 'Кнопка без фона',
+        outline: 'outline',
+        type: 'type',
+        disabled: '',
+        wide: '',
+        loading: '',
+        icon: '',
+        iconRight: '',
+      }
+    },
+    todo() {
+      return []
+    },
+  },
   html() {
     return {
       title: 'Button',

@@ -1,5 +1,5 @@
 <template>
-  <pre class="component-source-code"><code :class="['hljs', language, ]" v-html="highlight" /></pre>
+  <pre class="component-source-code"><code :class="['hljs', {language: lang}, ]" v-html="highlight" /></pre>
 </template>
 
 <script>
@@ -11,11 +11,11 @@ export default {
   name: 'SourceCode',
   props: {
     code: { type: String, default: '', },
-    language: { type: String, default: 'html', },
+    lang: { type: String, default: 'html', },
   },
   computed: {
     highlight() {
-      return hljs.highlight(this.language, this.code).value
+      return hljs.highlight(this.lang, this.code).value
     },
   },
 }

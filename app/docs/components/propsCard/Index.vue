@@ -13,7 +13,7 @@
         </template>
         <template #default="{ item, }">
           <div class="title">default value</div>
-          <source-code v-if="item.type === 'function'" :code="item.default" language="javascript" />
+          <source-code v-if="item.type === 'function'" :code="item.default" lang="javascript" />
           <template v-else>{{ item.default }}</template>
         </template>
         <template #desc="{ item, }">
@@ -35,7 +35,7 @@
         </template>
         <template #default="{ item, }">
           <div class="title">default value</div>
-          <source-code v-if="item.type === 'function'" :code="item.default" language="javascript" />
+          <source-code v-if="item.type === 'function'" :code="item.default" lang="javascript" />
           <template v-else>{{ item.default }}</template>
         </template>
         <template #desc="{ item, }">
@@ -98,7 +98,7 @@ export default {
     },
   },
   mounted() {
-    const promises = $n.reduce(this.props, (result, prop, name) => {
+    const promises = $n.reduce(this.props.props, (result, prop, name) => {
       result[name] = import(`pages/${this.path}/${this.capitalize(name)}.vue`).then(() => true).catch(() => false)
       return result
     }, {})
@@ -153,7 +153,7 @@ export default {
     
       &::v-deep {
         main {
-          height: 500px;
+          max-height: 500px;
         }
       }
     

@@ -6,3 +6,13 @@
     <n-input title="Textarea" type="Textarea" />
   </n-items>
 </template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

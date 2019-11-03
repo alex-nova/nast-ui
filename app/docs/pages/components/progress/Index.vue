@@ -12,16 +12,22 @@ export default {
   name: 'PageComponentsDropdown',
   components: { ComponentPage, },
   data: () => ({
-    descriptions: {
-      speed: 'Animation speed in milliseconds',
-    },
     props,
-    todo: [
-      'Добавить описания полей',
-      'Добавить примеры использования',
-      'Добавить ожидаемое время загрузки (для более точного движения полосы)',
-    ],
   }),
+  computed: {
+    ...$n.mapGetters('components', [ 'colorsAsText', ]),
+    descriptions() {
+      return {
+        value: 'Текущее значение загрузки. Может принимать значения от 0 до 1.',
+        color: `Цвет полосы загрузки. Может принимать значения: ${this.colorsAsText}.`,
+        speed: 'Скорость анимации в миллисекундах.',
+        hidden: 'Сделать полосу пути загрузки невидимой.',
+      }
+    },
+    todo() {
+      return undefined
+    },
+  },
   html() {
     return {
       title: 'Dropdown',

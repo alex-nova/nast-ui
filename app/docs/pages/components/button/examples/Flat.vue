@@ -8,3 +8,13 @@
     <n-button flat color="default">Default</n-button>
   </n-items>
 </template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

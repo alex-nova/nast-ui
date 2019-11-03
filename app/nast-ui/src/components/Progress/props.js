@@ -8,7 +8,7 @@ export default {
     started: { type: Function, default: () => {}, },
     paused: { type: Function, default: (value) => {}, },
     ended: { type: Function, default: () => {}, },
-    'update:value': { type: Function, default: () => {}, },
+    'update:value': { type: Function, default: (value) => {}, },
   },
   
   computed: {

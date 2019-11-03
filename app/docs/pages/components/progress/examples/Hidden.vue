@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-progress ref="progress" />
+    <n-progress ref="progress" hidden />
     <n-button @click="load">go</n-button>
   </div>
 </template>
@@ -12,7 +12,7 @@ export default {
       this.$refs.progress.start()
       
       setTimeout(() => {
-        this.$refs.progress.end()
+        this.$refs.progress.end(true)
       }, 4000)
     },
   },

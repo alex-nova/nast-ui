@@ -6,3 +6,13 @@
     <n-input title="Right inner icon" icon-right-inner="user" />
   </n-items>
 </template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

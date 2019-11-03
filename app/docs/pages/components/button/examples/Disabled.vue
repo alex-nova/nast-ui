@@ -5,3 +5,13 @@
     <n-button disabled color="success">Disabled button</n-button>
   </n-items>
 </template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

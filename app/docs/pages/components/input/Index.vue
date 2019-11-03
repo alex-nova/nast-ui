@@ -12,12 +12,18 @@ export default {
   name: 'PageComponentsButton',
   components: { ComponentPage, },
   data: () => ({
-    descriptions: {
-      type: 'text|password|number|textarea',
-    },
     props,
-    todo: [],
   }),
+  computed: {
+    descriptions() {
+      return {
+        type: 'text|password|number|textarea',
+      }
+    },
+    todo() {
+      return []
+    },
+  },
   html() {
     return {
       title: 'Input',

@@ -38,7 +38,7 @@ export default {
       this.started()
       this.$emit('started')
       if (this.s_value === 1) {
-        this.reset(0)
+        this.reset()
       }
       
       this.interval = setInterval(() => {
@@ -49,33 +49,35 @@ export default {
         }
       }, this.speed)
     },
-    pause(silent = false) {
-      if (!silent) {
-        this.paused(this.value)
-        this.$emit('paused', this.value)
-      }
-      
-      if (this.interval) {
-        clearInterval(this.interval)
-      }
+    pause() {
+      this.clearInterval()
+      this.paused(this.value)
+      this.$emit('paused', this.value)
     },
-    end() {
-      this.pause(true)
-      this.$nextTick(() => {
-        this.change(1)
-        setTimeout(() => {
-          this.ended()
-          this.$emit('ended')
-        }, this.speed)
-      })
+    end(reset = false) {
+      this.clearInterval()
+      this.change(1)
+      setTimeout(() => {
+        this.ended()
+        this.$emit('ended')
+        if (reset) {
+          this.reset()
+        }
+      }, this.speed)
     },
     reset() {
-      this.pause(true)
+      this.clearInterval()
       this.ending = true
       this.change(0)
       setTimeout(() => {
         this.ending = false
-      }, 10)
+      }, this.speed)
+    },
+    clearInterval() {
+      if (this.interval) {
+        clearInterval(this.interval)
+        this.interval = null
+      }
     },
     change(value) {
       this.s_value = value
@@ -102,10 +104,10 @@ export default {
     @each $color, $value in $colors {
       &.#{$color} {
         &:not(.n-hidden) {
-          background: var(--primary-t-10);
+          background: var(--#{$color}-t-10);
         }
         .n-content {
-          background: var(--primary);
+          background: var(--#{$color});
         }
       }
     }

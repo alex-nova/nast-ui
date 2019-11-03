@@ -5,3 +5,13 @@
     <n-input title="Disabled input" placeholder="With placeholder" disabled />
   </n-items>
 </template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
