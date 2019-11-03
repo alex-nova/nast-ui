@@ -4,12 +4,14 @@ export default {
   state: {
     pages: {
       index: { icon: 'tachometer-alt', route: 'index', parent: null, },
+      
       components: { icon: 'list-alt', route: 'components', parent: 'index', },
       button: { route: 'button', parent: 'components', },
       dropdown: { route: 'dropdown', parent: 'components', },
       input: { route: 'input', parent: 'components', },
       popup: { route: 'popup', parent: 'components', },
       progress: { route: 'progress', parent: 'components', },
+      loader: { route: 'loader', parent: 'components', },
   
       directives: { icon: 'sitemap', route: 'directives', parent: 'index', },
       konstructor: { icon: 'sitemap', route: 'konstructor', parent: 'index', },
@@ -21,6 +23,7 @@ export default {
         { name: 'button', },
         { name: 'dropdown', },
         { name: 'input', },
+        { name: 'loader', },
       ], },
       { name: 'baseComponentsGroup', icon: 'folder', children: [
         { name: 'popup', },
@@ -37,6 +40,7 @@ export default {
       button: 'Button',
       dropdown: 'Dropdown',
       input: 'Input',
+      loader: 'Loader',
       directives: 'Директивы',
       konstructor: 'Конструктор',
       

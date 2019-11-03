@@ -16,8 +16,8 @@
             </n-dropdown-item>
           </template>
         </div>
-        <div ref="items" class="n-items" @scroll="s_scroll">
-          <div v-if="loading" class="n-loading">Loading...</div>
+        <div ref="items" :class="[ 'n-items', {'n-loading': loading}, ]" @scroll="s_scroll">
+          <n-loader :loading="loading" />
           <template v-if="s_data.length">
             <template v-for="(item, i) in s_data">
               <n-dropdown-group v-if="isGroup(item)" :key="item[itemValue]" :value="item" :indexes="[ i, ]"
@@ -44,6 +44,7 @@
 
 <script>
 import isArray from 'lodash/isArray'
+import debounce from 'lodash/debounce'
 import props from './../props'
 import clickOutside from 'nast-ui/src/directives/click-outside'
 
@@ -180,23 +181,27 @@ export default {
       this.$emit('select', item, this.parents)
       this.select(item, this.parents)
     },
-    s_scroll(event = null) {
+    s_scroll: debounce(function(event = null) {
       const target = this.$refs.items
       if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
         this.loadNextPage()
+      } else {
+        this.loading = false
       }
-      // Don't fire event if s_scroll called from code
-      if (event) {
+  
+      if (event) { // Don't fire event if s_scroll called from code
         this.$emit('scroll', event)
         this.scroll(event)
       }
-    },
+    }, 100),
     loadNextPage() {
       if (this.total !== null) {
         if ((this.page + 1) * this.size < this.total) {
           this.s_load(this.page + 1)
+          return
         }
       }
+      this.loading = false
     },
     s_load(page) {
       if (this.load) {
@@ -214,7 +219,6 @@ export default {
           promise.then((response) => {
             const data = this.getContent(response)
             this.total = this.getTotalCount(response)
-            this.loading = false
             
             if (this.page) {
               this.s_data = this.s_data.concat(data)
@@ -258,10 +262,10 @@ export default {
         padding: 5px 0;
         max-height: 300px;
         overflow-y: auto;
-      }
-  
-      .n-loading {
-        padding: 30px 5px;
+        
+        &.n-loading {
+          min-height: 100px;
+        }
       }
   
       .n-empty {

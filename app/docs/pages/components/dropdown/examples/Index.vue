@@ -3,7 +3,7 @@
     <div v-for="item in selectedFull" :key="item.value">{{ item.title }}</div>
     <!--    <div>{{ selectedFull.title }}</div>-->
     
-    <n-dropdown :full-value.sync="selectedFull" multi :load="load" :size="3">
+    <n-dropdown :full-value.sync="selectedFull" multi :load="load" :size="2">
       <n-button icon-right="angle-down">Open</n-button>
     </n-dropdown>
   </div>
@@ -89,7 +89,7 @@ export default {
           })
           
           resolve({ data: result, pagination: { total, }, })
-        }, 500)
+        }, 200)
       })
     },
     eachDeep(container, childrenName, callback) {

@@ -12,6 +12,7 @@ import Icon from './Icon/default/Index.vue'
 import Input from './Input/default/Index.vue'
 import Items from './Items/default/Index.vue'
 import Link from './Link/default/Index.vue'
+import Loader from './Loader/default/Index.vue'
 import Navigation from './Navigation/default/Index.vue'
 import NavigationGroup from './Navigation/_NavigationGroup/default/Index.vue'
 import NavigationItem from './Navigation/_NavigationItem/default/Index.vue'
@@ -38,6 +39,7 @@ export default {
     Vue.component('nInput', Input)
     Vue.component('nItems', Items)
     Vue.component('nLink', Link)
+    Vue.component('nLoader', Loader)
     Vue.component('nNavigation', Navigation)
     Vue.component('nNavigationGroup', NavigationGroup)
     Vue.component('nNavigationItem', NavigationItem)
