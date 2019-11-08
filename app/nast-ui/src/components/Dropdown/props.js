@@ -2,16 +2,14 @@ export default {
   props: {
     open: { type: Boolean, default: false, },
     data: { type: Array, default: () => [], },
+    load: { type: Function, default: null, }, // props - ({ page, size, }, parent)
     value: { type: [ String, Object, Boolean, Number, Array, ], default: null, },
-    fullValue: { type: [ Object, Array, ], default: () => ({}), },
-    multi: { type: Boolean, default: false, },
     closeByOutside: { type: Boolean, default: true, },
-    closeOnSelect: { type: Boolean, default: true, },
+    closeOnSelect: { type: Boolean, default: null, }, // false if multi
     itemValue: { type: String, default: 'value', },
-    itemTitle: { type: String, default: 'title', },
+    itemTitle: { type: [ Function, String, ], default: (item) => item.title, },
     itemChildren: { type: String, default: 'children', },
     size: { type: Number, default: 10, },
-    load: { type: Function, default: null, }, // props - ({ page, size, }, parent)
     getContent: { type: Function, default: (response) => response.data, },
     getTotalCount: { type: Function, default: (response) => {
       if (response.pagination) {
@@ -27,7 +25,6 @@ export default {
     select: { type: Function, default: (item, items, indexes) => {}, },
     scroll: { type: Function, default: (event) => {}, },
     'update:value': { type: Function, default: (value) => {}, },
-    'update:fullValue': { type: Function, default: (item) => {}, },
   },
   
   computed: {
@@ -36,8 +33,6 @@ export default {
         open: this.open,
         data: this.data,
         value: this.value,
-        fullValue: this.fullValue,
-        multi: this.multi,
         closeByOutside: this.closeByOutside,
         closeOnSelect: this.closeOnSelect,
         itemValue: this.itemValue,
@@ -55,7 +50,6 @@ export default {
         select: this.select,
         scroll: this.scroll,
         'update:value': this['update:value'],
-        'update:fullValue': this['update:fullValue'],
       }
     },
   },

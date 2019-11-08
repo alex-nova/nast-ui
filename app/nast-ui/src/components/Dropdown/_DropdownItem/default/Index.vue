@@ -1,16 +1,24 @@
 <template>
   <div :class="[ 'n-dropdown-item', { 'n-active': active, }, ]" @click="s_click">
-    <slot :item="value">{{ value[itemTitle] }}</slot>
+    <slot :item="value">{{ getTitle(value) }}</slot>
   </div>
 </template>
 
 <script>
+import isObject from 'lodash/isObject'
+import isFunction from 'lodash/isFunction'
 import props from './../props'
 
 export default {
   name: 'NDropdownItem',
   mixins: [ props, ],
   methods: {
+    getTitle(item) {
+      if (isObject(item)) {
+        return isFunction(this.itemTitle) ? this.itemTitle(item) : item[this.itemTitle]
+      }
+      return item
+    },
     s_click(event) {
       this.click(this.value, this.indexes, event)
       this.$emit('click', this.value, this.indexes, event)

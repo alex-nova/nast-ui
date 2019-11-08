@@ -10,12 +10,16 @@ hljs.registerLanguage('javascript', javascript)
 export default {
   name: 'SourceCode',
   props: {
-    code: { type: String, default: '', },
+    code: { type: null, default: '', },
     lang: { type: String, default: 'html', },
   },
   computed: {
     highlight() {
-      return hljs.highlight(this.lang, this.code).value
+      let code = this.code
+      if (!$n.isString(code)) {
+        code = JSON.stringify(code)
+      }
+      return hljs.highlight(this.lang, code).value
     },
   },
 }

@@ -1,19 +1,13 @@
 <template>
-  <div>
-    <ul>
-      <li v-for="item in selected" :key="item.value">{{ item.title }}</li>
-    </ul>
-    <br />
-    <n-dropdown :value.sync="selected" :load="load">
-      <n-button icon-right="angle-down">Open</n-button>
-    </n-dropdown>
-  </div>
+  <n-dropdown :value.sync="selected" :load="load">
+    <n-button icon-right="angle-down">Open</n-button>
+  </n-dropdown>
 </template>
 
 <script>
 export default {
   data: () => ({
-    selected: [ { title: 'Начальник управления', value: 3, }, ],
+    selected: null,
     
     data: [
       { title: 'Департамент Розничный Бизнес', value: 1, children: [

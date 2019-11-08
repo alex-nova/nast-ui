@@ -1,10 +1,6 @@
 <template>
   <div>
-    <ul>
-      <li v-for="item in selected" :key="item.value">{{ item.title }}</li>
-    </ul>
-    <br />
-    <n-dropdown :value.sync="selected" :load="load">
+    <n-dropdown :value.sync="selected" :data="data" item-children="items">
       <n-button icon-right="angle-down">Open</n-button>
     </n-dropdown>
   </div>
@@ -13,18 +9,18 @@
 <script>
 export default {
   data: () => ({
-    selected: [ { title: 'Начальник управления', value: 3, }, ],
+    selected: null,
     
     data: [
-      { title: 'Департамент Розничный Бизнес', value: 1, children: [
-        { title: 'Управление Контактный Центр', value: 2, children: [
+      { title: 'Департамент Розничный Бизнес', value: 1, items: [
+        { title: 'Управление Контактный Центр', value: 2, items: [
           { title: 'Начальник управления', value: 3, },
           { title: 'Главный специалист', value: 4, },
           { title: 'Ведущий специалист', value: 5, },
           { title: 'Специалист', value: 6, },
         ], },
       ], },
-      { title: 'Департамент Сервиса Юридических лиц', value: 7, children: [
+      { title: 'Департамент Сервиса Юридических лиц', value: 7, items: [
         { title: 'Начальник управления', value: 8, },
         { title: 'Главный специалист', value: 9, },
         { title: 'Первый специалист', value: 10, },
@@ -59,48 +55,6 @@ export default {
       { title: 'Заместитель Директора Департамента', value: 22, },
     ],
   }),
-  methods: {
-    load(params, parent) {
-      const page = params.page
-      const size = params.size
-      
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          let result = []
-          if (parent) {
-            this.eachDeep(this.data, 'children', (item) => {
-              if (item.value === parent.value) {
-                result = item.children
-              }
-            })
-          } else {
-            result = this.data
-          }
-          
-          const total = result.length
-          
-          if (page !== undefined) {
-            result = result.slice(page * size, (page + 1) * size)
-          }
-          
-          result = result.map((i) => {
-            if (i.children) return { ...i, children: true, }
-            return i
-          })
-          
-          resolve({ data: result, pagination: { total, }, })
-        }, 200)
-      })
-    },
-    eachDeep(container, childrenName, callback) {
-      container.map((object) => {
-        callback(object)
-        if (object[childrenName]) {
-          this.eachDeep(object[childrenName], childrenName, callback)
-        }
-      })
-    },
-  },
 }
 </script>
 

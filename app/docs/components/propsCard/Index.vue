@@ -5,20 +5,19 @@
       <n-table :data="dataProps" :columns="columns" headless>
         <template #name="{ item, }">
           <div class="title">name</div>
-          <n-link :to="getAnchor(item.name)">{{ item.name }}</n-link>
+          <n-link class="name" :to="getAnchor(item.name)">{{ item.name }}</n-link>
         </template>
         <template #type="{ item, }">
           <div class="title">type</div>
-          {{ item.type }}
+          <div class="type">{{ item.type }}</div>
         </template>
         <template #default="{ item, }">
           <div class="title">default value</div>
-          <source-code v-if="item.type === 'function'" :code="item.default" lang="javascript" />
-          <template v-else>{{ item.default }}</template>
+          <source-code :code="item.default" lang="javascript" />
         </template>
         <template #desc="{ item, }">
           <div class="title">description</div>
-          {{ item.desc }}
+          <div class="description">{{ item.desc }}</div>
         </template>
       </n-table>
     </n-card>
@@ -31,7 +30,7 @@
         </template>
         <template #type="{ item, }">
           <div class="title">type</div>
-          {{ item.type }}
+          <div class="type">{{ item.type }}</div>
         </template>
         <template #default="{ item, }">
           <div class="title">default value</div>
@@ -60,7 +59,7 @@ export default {
   },
   data: () => ({
     columns: [
-      { name: 'name', },
+      { name: 'name', width: '100px', },
       { name: 'type', },
       { name: 'default', },
       { name: 'desc', minWidth: '300px', maxWidth: '800px', },
@@ -112,11 +111,11 @@ export default {
     },
     typeToString(type) {
       const normalize = (i) => i.name.toLowerCase()
-      return $n.isArray(type) ? `[${type.map(normalize).join(', ')}]` : normalize(type)
+      return $n.isArray(type) ? type.map(normalize).join(' | ') : normalize(type)
     },
     defaultToString(def, type) {
       if ($n.isFunction(def)) {
-        if (type === Function) {
+        if ($n.isArray(type) ? type.includes(Function) : type === Function) {
           let func = def.toString()
           func = func.replace('function _default', '')
           func = func.replace(') {', ') => {')
@@ -156,11 +155,27 @@ export default {
           max-height: 500px;
         }
       }
-    
+      
+      .component-source-code {
+        font-size: .8em;
+      }
+  
+      .name {
+        padding-right: 20px;
+      }
+      .type {
+        opacity: .8;
+        font-size: .8em;
+        font-weight: bold;
+      }
       .title {
         opacity: .5;
         font-size: .7em;
         white-space: nowrap;
+      }
+      .description {
+        font-size: .8em;
+        opacity: .9;
       }
     }
   }

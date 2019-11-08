@@ -8,14 +8,14 @@
     <div v-if="isOpen" class="n-dropdown">
       <template v-for="(child, i) in value.children">
         <template v-if="child.children">
-          <n-dropdown-group :key="child[itemValue]" :item="child" :indexes="[ ...indexes, i, ]"
+          <n-dropdown-group :key="getValue(child)" :item="child" :indexes="[ ...indexes, i, ]"
                             :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
             <template #group="{ item, }"><slot name="group" :item="item" /></template>
             <template #default="{ item, }"><slot :item="item" /></template>
           </n-dropdown-group>
         </template>
         <template v-else>
-          <n-dropdown-item :key="child[itemValue]" :value="child" :indexes="[ ...indexes, i, ]"
+          <n-dropdown-item :key="getValue(child)" :value="child" :indexes="[ ...indexes, i, ]"
                            :item-title="itemTitle" :item-value="itemValue" @click="s_click">
             <template #default="{ item, }"><slot :item="item" /></template>
           </n-dropdown-item>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import isObject from 'lodash/isObject'
 import clickOutside from './../../../../directives/click-outside'
 import props from './../props'
 
@@ -39,6 +40,9 @@ export default {
     }
   },
   methods: {
+    getValue(item) {
+      return isObject(item) ? item[this.itemValue] : item
+    },
     s_click(item, indexes, event, isGroup = false) {
       this.$emit('click', item, indexes, event, isGroup)
       this.click(item, indexes, event, isGroup)

@@ -1,10 +1,9 @@
 export default {
   props: {
-    value: { type: Object, default: () => ({}), }, // { title: '', value: '', }
+    value: { type: [ String, Object, Boolean, Number, ], default: () => ({}), },
     active: { type: [ Boolean, ], default: false, },
     indexes: { type: Array, default: () => [], }, // массив индексов в массиве включая родителей
-    itemValue: { type: String, default: 'value', },
-    itemTitle: { type: String, default: 'title', },
+    itemTitle: { type: [ Function, String, ], default: (item) => item.title, },
     
     click: { type: Function, default: (item, event) => {}, },
   },
@@ -14,6 +13,9 @@ export default {
       return {
         item: this.item,
         active: this.active,
+        indexes: this.indexes,
+        itemValue: this.itemValue,
+        itemTitle: this.itemTitle,
       }
     },
     events() {

@@ -1,17 +1,17 @@
 <template>
   <div ref="dropdown" class="n-dropdown">
-    <n-popup v-click-outside="clickOutside" :open.sync="s_open" inline>
+    <n-popup ref="popup" v-click-outside="clickOutside" :open.sync="s_open">
       <template #action>
         <slot>open</slot>
       </template>
       <div class="n-content">
         <div v-show="parents.length" class="n-parents">
           <template v-for="(item, i) in parents">
-            <n-dropdown-item :key="item[itemValue]" :value="item" @click="parentClick(i)">
+            <n-dropdown-item :key="getValue(item)" :value="item" @click="parentClick(i)">
               <div class="n-parent-item">
                 <div v-for="n in i" :key="n" class="n-shift" />
                 <n-icon icon="arrow-left" />
-                <span class="n-text">{{ item[itemTitle] }}</span>
+                <span class="n-text">{{ getTitle(item) }}</span>
               </div>
             </n-dropdown-item>
           </template>
@@ -20,16 +20,16 @@
           <n-loader :loading="loading" />
           <template v-if="s_data.length">
             <template v-for="(item, i) in s_data">
-              <n-dropdown-group v-if="isGroup(item)" :key="item[itemValue]" :value="item" :indexes="[ i, ]"
+              <n-dropdown-group v-if="isGroup(item)" :key="getValue(item)" :value="item" :indexes="[ i, ]"
                                 :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
                 <template #group>
                   <div class="n-group-item">
-                    <span class="n-text">{{ item[itemTitle] }}</span>
+                    <span class="n-text">{{ getTitle(item) }}</span>
                     <n-icon icon="angle-down" />
                   </div>
                 </template>
               </n-dropdown-group>
-              <n-dropdown-item v-else :key="item[itemValue]" :value="item" :indexes="[ i, ]" :active="isActive(item)"
+              <n-dropdown-item v-else :key="getValue(item)" :value="item" :indexes="[ i, ]" :active="isActive(item)"
                                :item-title="itemTitle" :item-value="itemValue" @click="s_click" />
             </template>
           </template>
@@ -44,6 +44,8 @@
 
 <script>
 import isArray from 'lodash/isArray'
+import isObject from 'lodash/isObject'
+import isFunction from 'lodash/isFunction'
 import debounce from 'lodash/debounce'
 import props from './../props'
 import clickOutside from 'nast-ui/src/directives/click-outside'
@@ -56,10 +58,9 @@ export default {
     return {
       s_open: this.open,
       s_data: this.data,
-      s_value: this.calcValue(this.value, this.fullValue),
       selected: [],
       parents: [], // открытые на данный момент группы
-      indexes: [],
+      indexes: [], // TODO скорее всего не нужно
       loading: false,
       page: 0,
       total: null,
@@ -68,6 +69,12 @@ export default {
   computed: {
     action() {
       return this.$slots.default[0].elm
+    },
+    multi() {
+      return isArray(this.value)
+    },
+    s_closeOnSelect() {
+      return this.closeOnSelect !== null ? this.closeOnSelect : !this.multi
     },
   },
   watch: {
@@ -80,11 +87,10 @@ export default {
     data(value) {
       this.s_data = value
     },
-    value(value) {
-      this.s_value = this.calcValue(value, null)
-    },
-    fullValue(value) {
-      this.s_value = this.calcValue(null, value)
+    s_data(value) {
+      this.$nextTick(() => {
+        this.$refs.popup.update()
+      })
     },
   },
   mounted() {
@@ -97,15 +103,21 @@ export default {
     this.action.removeEventListener('click', this.actionClick)
   },
   methods: {
+    getTitle(item) {
+      if (isObject(item)) {
+        return isFunction(this.itemTitle) ? this.itemTitle(item) : item[this.itemTitle]
+      }
+      return item
+    },
+    getValue(item) {
+      const value = isObject(item) ? item[this.itemValue] : item
+      if (value === undefined) {
+        console.error(`Nast Dropdown: field ${this.itemValue} was not found in item!`)
+      }
+      return value
+    },
     actionClick() {
       this.toggle()
-    },
-    calcValue(value, fullValue) {
-      if (this.multi) {
-        return value || fullValue.map((i) => i[this.itemValue])
-      } else {
-        return value || fullValue[this.itemValue]
-      }
     },
     toggle(valueProp) {
       const value = valueProp === undefined ? !this.s_open : valueProp
@@ -145,9 +157,9 @@ export default {
     },
     isActive(item) {
       if (this.multi) {
-        return this.s_value.includes(item[this.itemValue])
+        return Boolean(this.value.filter((i) => this.getValue(i) === this.getValue(item)).length)
       } else {
-        return item[this.itemValue] === this.s_value
+        return this.getValue(item) === this.getValue(this.value)
       }
     },
     s_click(item, indexes, event, isGroup) {
@@ -161,23 +173,20 @@ export default {
       }
     },
     s_select(item, indexes) {
-      let value = item[this.itemValue]
-      let selected = item
-      
+      let value = item
       if (this.multi) {
-        if (this.s_value.includes(item[this.itemValue])) {
-          value = this.s_value.filter((i) => i !== item[this.itemValue])
-          selected = this.fullValue && this.fullValue.filter((i) => i[this.itemValue] !== item[this.itemValue])
-        } else {
-          value = [ ...this.s_value, item[this.itemValue], ]
-          selected = this.fullValue && [ ...this.fullValue, item, ]
+        value = this.value.filter((i) => this.getValue(i) !== this.getValue(item))
+        if (value.length === this.value.length) {
+          value = [ ...this.value, item, ]
         }
+      }
+      
+      if (this.s_closeOnSelect) {
+        this.toggle(false)
       }
       
       this.$emit('update:value', value)
       this['update:value'](value)
-      this.$emit('update:fullValue', selected)
-      this['update:fullValue'](selected)
       this.$emit('select', item, this.parents)
       this.select(item, this.parents)
     },

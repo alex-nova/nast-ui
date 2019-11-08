@@ -72,6 +72,9 @@ export default {
     }
   },
   methods: {
+    update() {
+      this.debouncedCalcStyle()
+    },
     s_close() {
       this.$emit('close')
       this.close()

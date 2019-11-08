@@ -23,5 +23,10 @@ export default {
         close: this.close,
       }
     },
+    functions() {
+      return {
+        update: this.update,
+      }
+    },
   },
 }

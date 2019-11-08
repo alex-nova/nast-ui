@@ -7,7 +7,7 @@
         <label v-if="title" :for="name" :class="[ {'n-active': titleIsActive}, ]">{{ title }}</label>
         <div class="n-margin">
           <div v-for="(v, i) in values" :key="i" class="n-item">
-            <div class="n-badge">{{ v }}</div>
+            <div class="n-badge">{{ getTitle(v) }}</div>
           </div>
           <span v-if="text" class="n-text-content">{{ textValue }}</span>
           <n-mini-input v-else ref="input" v-bind="inputProps" v-on="inputEvents" />
@@ -22,6 +22,8 @@
 
 <script>
 import isArray from 'lodash/isArray'
+import isFunction from 'lodash/isFunction'
+import isObject from 'lodash/isObject'
 import props from '../props'
 import NMiniInput from './MiniInput'
 
@@ -39,7 +41,7 @@ export default {
   computed: {
     inputProps() {
       return {
-        value: this.s_value,
+        value: this.getTitle(this.s_value),
         name: this.name,
         id: this.name,
         type: this.type,
@@ -65,7 +67,7 @@ export default {
         { 'n-no-label': !this.title, },
         { 'n-list': this.isArray, },
         { 'n-disabled': this.disabled || this.loading, },
-        { 'n-text': this.text, },
+        { 'n-text': Boolean(this.text), },
         { 'n-inner-icon': this.iconInner || this.iconRightInner || this.loading, },
       ]
     },
@@ -91,6 +93,12 @@ export default {
     this.calcValue(this.value)
   },
   methods: {
+    getTitle(item) {
+      if (isObject(item)) {
+        return isFunction(this.itemTitle) ? this.itemTitle(item) : item[this.itemTitle]
+      }
+      return item
+    },
     calcValue(value) {
       if (isArray(value)) {
         this.values = value

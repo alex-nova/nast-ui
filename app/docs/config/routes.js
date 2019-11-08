@@ -10,6 +10,7 @@ module.exports = [
       { path: 'components/input', name: 'input', component: () => import('./../pages/components/input/Index'), },
       { path: 'components/progress', name: 'progress', component: () => import('./../pages/components/progress/Index'), },
       { path: 'components/loader', name: 'loader', component: () => import('./../pages/components/loader/Index'), },
+      { path: 'components/select', name: 'select', component: () => import('./../pages/components/select/Index'), },
       
       { path: 'components/popup', name: 'popup', component: () => import('./../pages/components/popup/Index'), },
     
