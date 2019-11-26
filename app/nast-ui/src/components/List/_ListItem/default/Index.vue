@@ -1,0 +1,123 @@
+<template>
+  <div class="n-list-item">
+    <div :class="[ 'n-content', {'n-group': isGroup}, {'n-open': s_open}, ]">
+      <n-icon v-if="sortable" class="n-handle" icon="arrows-alt" />
+      <n-icon v-if="isGroup" class="n-caret" icon="angle-right" @click="s_click" />
+      <div class="n-title" @click="s_click">
+        <slot v-if="isGroup" name="group" :item="item">{{ getTitle(item) }}</slot>
+        <slot v-else :item="item">{{ getTitle(item) }}</slot>
+      </div>
+      <n-dropdown :data="tools" up><n-icon class="n-tools" icon="cog" /></n-dropdown>
+    </div>
+    <n-list-group v-if="isGroup && s_open" :data="item[itemChildren]" :sortable="sortable">
+      <template #group="{ item, }"><slot name="group" :item="item" /></template>
+      <template #default="{ item, }"><slot :item="item" /></template>
+    </n-list-group>
+  </div>
+</template>
+
+<script>
+import props from './../props'
+import { getTitle, } from 'nast-ui/src/_utils/functions'
+
+export default {
+  name: 'NListItem',
+  mixins: [ props, ],
+  data() {
+    return {
+      s_open: this.open || false,
+      tools: [
+        'Редактировать',
+        'Удалить',
+      ],
+    }
+  },
+  computed: {
+    isGroup() {
+      const children = this.item[this.itemChildren]
+      return children === [] ? false : Boolean(children)
+    },
+  },
+  watch: {
+    open(value) {
+      this.s_open = value
+    },
+  },
+  methods: {
+    getTitle(item) {
+      return getTitle(item, this.itemTitle)
+    },
+    s_click(event) {
+      if (this.isGroup) {
+        if (this.open === null) {
+          this.s_open = !this.s_open
+        }
+        this['update:open'](!this.open)
+        this.$emit('update:open', !this.open)
+      }
+      
+      this.click(this.item, event)
+      this.$emit('click', this.item, this.isGroup, event)
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+  .sortable-ghost {
+    opacity: .2;
+  }
+  .sortable-drag {
+    opacity: 0;
+  }
+</style>
+<style lang="scss" scoped>
+  .n-list-item {
+    --n-popup-width: 200px;
+    
+    .n-content {
+      display: flex;
+      align-items: center;
+      margin: 0 -5px;
+      &>* {
+        padding: 5px;
+      }
+      &:hover {
+        .n-tools { opacity: .2; }
+      }
+      &.n-group {
+        .n-title { cursor: pointer; }
+      }
+      &.n-open {
+        .n-caret { transform: rotate(90deg); }
+      }
+      
+      .n-title {
+        padding: 8px 5px;
+      }
+      .n-handle {
+        cursor: grab;
+        &:active {
+          cursor: grabbing;
+        }
+      }
+      .n-tools {
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity var(--transition-slow);
+        &:hover {
+          opacity: .5;
+        }
+      }
+      .n-caret {
+        cursor: pointer;
+        opacity: .5;
+        transition: transform var(--transition-fast);
+      }
+    }
+    
+    .n-list-group {
+      padding-left: 20px;
+    }
+  }
+</style>

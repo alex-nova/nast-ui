@@ -1,16 +1,17 @@
 export default {
   props: {
-    open: { type: Boolean, default: false, },
+    value: { type: [ String, Object, Boolean, Number, Array, ], default: null, }, // multi if array
     data: { type: Array, default: () => [], },
     load: { type: Function, default: null, }, // props - ({ page, size, }, parent)
-    name: { type: String, default: () => `input-${Math.random()}`, },
+    creatable: { type: Boolean, default: false, },
+    
     title: { type: String, default: '', },
-    value: { type: [ String, Object, Boolean, Number, Array, ], default: null, },
+    name: { type: String, default: () => `select-${Math.random()}`, },
     placeholder: { type: String, default: '', },
+    
     disabled: { type: Boolean, default: false, },
     text: { type: [ Boolean, String, ], default: false, },
     inline: { type: Boolean, default: false, },
-  
     icon: { type: String, default: '', },
     iconInner: { type: String, default: '', },
     iconRight: { type: String, default: '', },
@@ -22,14 +23,15 @@ export default {
     secondary: { type: [ String, Boolean, ], default: false, },
     tertiary: { type: [ String, Boolean, ], default: false, },
     animate: { type: String, default: 'shake', },
-  
-    closeByOutside: { type: Boolean, default: true, },
+    
+    clear: { type: Boolean, default: true, },
+    open: { type: Boolean, default: false, },
     closeOnSelect: { type: Boolean, default: null, }, // false if multi
+    size: { type: Number, default: 10, },
     itemValue: { type: String, default: 'value', },
     optionTitle: { type: [ Function, String, ], default: (item) => item.title, },
     selectedTitle: { type: [ Function, String, ], default: (item) => item.title, },
     itemChildren: { type: String, default: 'children', },
-    size: { type: Number, default: 10, },
     getContent: { type: Function, default: (response) => response.data, },
     getTotalCount: { type: Function, default: (response) => {
       if (response.pagination) {
@@ -41,19 +43,26 @@ export default {
       return null
     }, },
   
+    // input: { type: Function, default: (value) => {}, },
+    // select: { type: Function, default: (value) => {}, },
+    // click: { type: Function, default: (event) => {}, },
+    // focusin: { type: Function, default: (event) => {}, },
+    // focusout: { type: Function, default: (event) => {}, },
+    // keydown: { type: Function, default: (event) => {}, },
+    // keyup: { type: Function, default: (event) => {}, },
     'update:value': { type: Function, default: (value) => {}, },
-    input: { type: Function, default: (value) => {}, },
-    select: { type: Function, default: (value) => {}, },
-    click: { type: Function, default: (event) => {}, },
-    focusin: { type: Function, default: (event) => {}, },
-    focusout: { type: Function, default: (event) => {}, },
-    keydown: { type: Function, default: (event) => {}, },
-    keyup: { type: Function, default: (event) => {}, },
   },
   
   computed: {
     props() {
       return {
+        value: this.value,
+        data: this.data,
+        load: this.load,
+        creatable: this.creatable,
+        title: this.title,
+        name: this.name,
+        placeholder: this.placeholder,
       }
     },
     events() {

@@ -1,6 +1,6 @@
 <template>
   <div class="n-input-mini-input">
-    <input ref="input" :style="{'min-width': width}" v-bind="$attrs" v-on="$listeners" :type="s_type">
+    <input ref="input" :style="{'min-width': width}" v-bind="$attrs" :type="s_type" v-on="$listeners">
     <div ref="hidden" class="n-hidden">{{ hiddenValue }}</div>
   </div>
 </template>
@@ -41,6 +41,9 @@ export default {
     },
     focus() {
       this.$refs.input.focus()
+    },
+    blur() {
+      this.$refs.input.blur()
     },
   },
 }

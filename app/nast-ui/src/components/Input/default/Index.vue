@@ -1,43 +1,50 @@
 <template>
-  <div :class="[ 'n-input', ...containerClasses, ]" @focusin="s_focusin" @focusout="s_focusout">
+  <div v-click-outside="clickOutside" :class="[ 'n-input', ...containerClasses, ]" @click="s_click">
     <div class="n-wrapper">
-      <n-icon v-if="nIcon && (icon || iconInner)" :icon="icon || iconInner" class="icon" />
+      <n-icon v-if="nIcon && (icon || iconInner)" :icon="icon || iconInner" class="n-icon" />
       
-      <div class="n-content" @click="s_click">
-        <label v-if="title" :for="name" :class="[ {'n-active': titleIsActive}, ]">{{ title }}</label>
-        <div class="n-margin">
-          <div v-for="(v, i) in values" :key="i" class="n-item">
-            <div class="n-badge">{{ getTitle(v) }}</div>
+      <div class="n-content">
+        <div class="n-items">
+          <label v-if="title" :for="name" :class="[ {'n-active': titleIsActive}, ]">{{ title }}</label>
+          <div class="n-margin">
+            <div v-for="(v, i) in selected" :key="i" class="n-item">
+              <div class="n-badge">
+                <div class="n-text">{{ getTitle(v) }}</div>
+                <div class="n-remove" @click="deleteClick(i)"><n-icon v-if="nIcon" icon="times" /></div>
+              </div>
+            </div>
+            <span v-if="text" class="n-text-content">{{ textValue }}</span>
+            <n-mini-input v-else ref="input" v-bind="inputProps" v-on="inputEvents" />
           </div>
-          <span v-if="text" class="n-text-content">{{ textValue }}</span>
-          <n-mini-input v-else ref="input" v-bind="inputProps" v-on="inputEvents" />
         </div>
+        <div v-if="nIcon && hasClearIcon" class="n-clear" @click="s_clear"><n-icon v-if="nIcon" icon="times" /></div>
       </div>
-  
-      <n-icon v-if="nIcon && loading" :icon="'spinner'" class="icon-right" pulse />
-      <n-icon v-else-if="nIcon && (iconRight || iconRightInner)" :icon="iconRight || iconRightInner" class="icon-right" />
+      <n-icon v-if="nIcon && loading" icon="spinner" class="n-icon-right" pulse />
+      <n-icon v-else-if="nIcon && (iconRight || iconRightInner)" :icon="iconRight || iconRightInner" class="n-icon-right" />
     </div>
   </div>
 </template>
 
 <script>
 import isArray from 'lodash/isArray'
-import isFunction from 'lodash/isFunction'
-import isObject from 'lodash/isObject'
+import { getTitle, } from 'nast-ui/src/_utils/functions'
 import props from '../props'
 import NMiniInput from './MiniInput'
+import clickOutside from 'nast-ui/src/directives/click-outside'
 
 export default {
   name: 'NInput',
+  directives: { clickOutside, },
   components: { NMiniInput, },
   mixins: [ props, ],
-  data: () => ({
-    isFocused: false,
-    s_value: '',
-    isArray: false,
-    values: [],
-    lastValue: '',
-  }),
+  data() {
+    return {
+      s_focused: this.focused || false,
+      s_value: null,
+      selected: [],
+      lastValue: '', // used for understanding of deleting item when backspace pushed
+    }
+  },
   computed: {
     inputProps() {
       return {
@@ -52,20 +59,23 @@ export default {
     inputEvents() {
       return {
         input: this.s_input,
-        change: this.s_change,
+        change: this.inputChange,
         keydown: this.s_keydown,
         keyup: this.s_keyup,
+        focus: this.s_focus,
+        blur: this.s_blur,
       }
     },
     titleIsActive() {
-      return this.isFocused || this.s_value || this.placeholder || this.values.length || this.text
+      const focused = this.focused !== null ? this.focused : this.s_focused
+      return focused || this.s_value || this.placeholder || this.selected.length || this.text
     },
     containerClasses() {
       return [
         { 'n-inline': this.inline, },
-        { 'n-focused': this.isFocused, },
+        { 'n-focused': this.s_focused, },
         { 'n-no-label': !this.title, },
-        { 'n-list': this.isArray, },
+        { 'n-multi': this.multi, },
         { 'n-disabled': this.disabled || this.loading, },
         { 'n-text': Boolean(this.text), },
         { 'n-inner-icon': this.iconInner || this.iconRightInner || this.loading, },
@@ -83,10 +93,30 @@ export default {
     nIcon() {
       return Boolean(this.$options.components['nIcon'])
     },
+    hasClearIcon() {
+      if (!this.selected.length && !this.s_value) {
+        return false
+      }
+      if (this.clear === null) {
+        return this.selected.length && !this.disabled
+      }
+      return this.clear
+    },
+    multi() {
+      return isArray(this.value)
+    },
   },
   watch: {
     value(value) {
       this.calcValue(value)
+    },
+    focused(value) {
+      this.s_focused = value
+      if (value) {
+        this.$refs.input.focus()
+      } else {
+        this.$refs.input.blur()
+      }
     },
   },
   mounted() {
@@ -94,79 +124,111 @@ export default {
   },
   methods: {
     getTitle(item) {
-      if (isObject(item)) {
-        return isFunction(this.itemTitle) ? this.itemTitle(item) : item[this.itemTitle]
-      }
-      return item
+      return getTitle(item, this.itemTitle)
     },
     calcValue(value) {
-      if (isArray(value)) {
-        this.values = value
-        this.isArray = true
+      if (this.multi) {
+        this.selected = value
       } else {
         this.s_value = value
       }
     },
-    s_input(e) {
-      this.s_value = e.target.value
-      if (!this.isArray) {
-        this.$emit('modelChange', this.s_value, e)
+    inputChange(e) {
+      if (!this.multi) {
+        this.s_change(e.target.value)
       }
-      this.input(this.s_value, e)
-      this.$emit('input', this.s_value, e)
     },
-    s_change(e) {
-      this.s_value = e.target.value
-      if (!this.isArray) {
-        this.change(this.s_value, e)
-        this.$emit('change', this.s_value, e)
+    clickOutside(e) {
+      if (this.s_focused) {
+        this.updateFocus(false)
       }
+    },
+    updateFocus(value) {
+      if (this.s_focused === value) return
+      
+      if (this.focused === null) {
+        this.s_focused = value
+      }
+      this['update:focused'](value)
+      this.$emit('update:focused', value)
+    },
+    deleteClick(index) {
+      this.s_change(this.selected.filter((v, i) => i !== index))
+    },
+    s_input(e) {
+      const value = e.target.value
+      if (this.value === null || this.multi) {
+        this.s_value = value
+      }
+      if (!this.multi) {
+        this.$emit('update:value', this.value)
+        this['update:value'](this.value)
+      }
+      this.input(value, e)
+      this.$emit('input', value, e)
     },
     s_click(e) {
       this.$refs.input.focus()
       this.click(e)
       this.$emit('click', e)
     },
-    s_focusin(e) {
-      this.isFocused = true
-      this.focusin(e)
-      this.$emit('focusin', e)
+    s_focus(e) {
+      this.updateFocus(true)
+      this.focus(e)
+      this.$emit('focus', e)
     },
-    s_focusout(e) {
-      this.isFocused = false
-      this.focusout(e)
-      this.$emit('focusout', e)
+    s_blur(e) {
+      if (!e.relatedTarget) {
+        e.preventDefault()
+        return
+      }
+      this.updateFocus(false)
+      this.blur(e)
+      this.$emit('blur', e)
     },
     s_keydown(e) {
       this.keydown(e)
       this.$emit('keydown', e)
       
-      if (e.key === 'Backspace' && this.values.length) {
+      if (e.key === 'Backspace' && this.selected.length) {
         this.lastValue = this.s_value
       }
     },
     s_keyup(e) {
       this.keyup(e)
       this.$emit('keyup', e)
-      
-      const changeItems = (values, e) => {
-        if (this.isArray) {
-          this.change(values, e)
-          this.$emit('change', values, e)
-          this.$emit('modelChange', values, e)
+  
+      if (e.key === 'Backspace' && this.selected.length && !this.lastValue) {
+        const selected = this.selected.slice(0, -1)
+        this.s_change(selected, e)
+      }
+      if (e.key === 'Enter' && this.multi && this.s_value.trim()) {
+        const selected = [ ...this.selected, this.s_value.trim(), ]
+        this.s_change(selected, e)
+        this.s_value = null
+      }
+    },
+    s_change(value, e) {
+      if (this.value === null) {
+        if (this.multi) {
+          this.selected = value
+        } else {
+          this.s_value = value
         }
-        this.values = values
+      }
+      this['update:value'](value, e)
+      this.$emit('update:value', value, e)
+    },
+    s_clear() {
+      if (this.multi) {
+        this.s_change([])
+        this.s_value = ''
+      } else {
+        this.s_change(null)
       }
   
-      if (e.key === 'Backspace' && this.values.length && !this.lastValue) {
-        const values = this.values.slice(0, -1)
-        changeItems(values, e)
-      }
-      if (e.key === 'Enter' && this.isArray && this.s_value.trim()) {
-        const values = [ ...this.values, this.s_value.trim(), ]
-        this.s_value = ''
-        changeItems(values, e)
-      }
+      this.input('')
+      this.$emit('input', '')
     },
   },
 }
@@ -175,7 +237,7 @@ export default {
 <style lang="scss" src="./../../../_utils/cssVariables.scss"></style>
 <style lang="scss">
   html {
-  
+    --n-input-width: 300px;
   }
 </style>
 <style lang="scss" scoped>
@@ -185,15 +247,14 @@ export default {
     padding-top: 1em;
     vertical-align: baseline;
     width: 100%;
-    &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom: 1px solid var(--border-color); }
     
-    .n-wrapper {
+    .n-wrapper, .n-content {
       display: flex;
       align-items: center;
       width: 100%;
     }
     
-    .n-content {
+    .n-items {
       cursor: text;
       position: relative;
       width: 100%;
@@ -232,23 +293,50 @@ export default {
       }
       .n-item {
         .n-badge {
-          padding: .1em .4em;
+          padding: 5px 6px;
           font-size: .8em;
+          line-height: 1;
           border: 1px solid #333;
           border-radius: var(--border-radius);
-          display: block;
-          vertical-align: center;
+          display: flex;
+          align-items: center;
+          position: relative;
+          
+          .n-text {
+            display: inline-block;
+            padding-right: 8px;
+          }
         }
       }
       .n-input-mini-input, .n-text-content {
         flex-grow: 1;
-        line-height: 1.2;
-        padding: .3em 0;
+        line-height: 1;
+        padding: 5px 0;
+      }
+    }
+    .n-remove, .n-clear {
+      width: 1em;
+      height: 1em;
+      box-sizing: content-box;
+      font-size: 11px;
+      padding: 5px;
+      margin: -5px;
+      cursor: pointer;
+    }
+    .n-remove {
+    
+    }
+    .n-clear {
+      margin: -5px 0;
+      opacity: .2;
+      transition: opacity var(--transition);
+      &:hover {
+        opacity: .5;
       }
     }
   
-    .icon { margin-right: 7px; }
-    .icon-right { margin-left: 7px; }
+    .n-icon { margin-right: 7px; }
+    .n-icon-right { margin-left: 7px; }
   
     &.n-text {
       .n-content { border-color: transparent; }
@@ -258,16 +346,15 @@ export default {
       &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom-style: dotted; }
       &.n-inner-icon .n-wrapper, &:not(.n-inner-icon) .n-content { background: rgba(127, 127, 127, .01); }
     }
-    &.n-list {
+    &.n-multi {
       .n-input-mini-input::v-deep input { width: 2px; }
     }
     &.n-no-label { padding-top: 0; }
-    &.n-inline { display: inline-block; width: 200px; }
+    &.n-inline { display: inline-block; width: var(--n-input-width); }
+    &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom: 1px solid var(--border-color); }
     &.n-focused {
       label { color: var(--primary); opacity: 1; }
-      .n-content { border-color: var(--primary); }
+      &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-color: var(--primary); }
     }
-    
   }
-  
 </style>

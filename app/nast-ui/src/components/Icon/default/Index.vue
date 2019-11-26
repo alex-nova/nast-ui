@@ -1,5 +1,5 @@
 <template>
-  <i :class="['n-icon', 'fas', 'fa-'+icon, {'fa-pulse': pulse}]"></i>
+  <i :class="['n-icon', 'fas', 'fa-'+icon, {'fa-pulse': pulse}]" v-on="$listeners"></i>
 </template>
 
 <script>

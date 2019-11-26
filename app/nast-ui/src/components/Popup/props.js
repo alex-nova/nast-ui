@@ -6,21 +6,32 @@ export default {
     align: { type: String, default: 'left', }, // left, right, center
     inline: { type: Boolean, default: false, },
     absolute: { type: Boolean, default: false, },
+    fit: { type: Boolean, default: false, },
   
     'update:open': { type: Function, default: () => {}, },
     close: { type: Function, default: () => {}, },
+    focus: { type: Function, default: () => {}, },
+    blur: { type: Function, default: () => {}, },
   },
   
   computed: {
     props() {
       return {
         open: this.open,
+        side: this.side,
+        up: this.up,
+        align: this.align,
+        inline: this.inline,
+        absolute: this.absolute,
+        fit: this.fit,
       }
     },
     events() {
       return {
         'update:open': this['update:open'],
         close: this.close,
+        focus: this.focus,
+        blur: this.blur,
       }
     },
     functions() {

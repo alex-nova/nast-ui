@@ -1,7 +1,7 @@
 <template>
   <div :class="['n-popup', {'n-inline': inline}]">
     <slot name="action" />
-    <div ref="container" class="n-popup-container">
+    <div ref="container" class="n-popup-container" tabindex="-1" @focus="s_focus" @blur="s_blur">
       <div ref="wrapper" :class="['n-popup-wrapper', {'n-fixed': fixed}, ]">
         <div class="n-dark" @click="s_close"></div>
         <div v-if="s_open" ref="popup" class="n-popup-content" :style="style">
@@ -41,6 +41,9 @@ export default {
         const pos = getPosition(popupRect, this.element.getBoundingClientRect(), this.absolute)
         style.top = `${pos.top}px`
         style.left = `${pos.left}px`
+        if (this.fit) {
+          style.minWidth = `${this.element.clientWidth}px`
+        }
       }
   
       return {
@@ -80,6 +83,14 @@ export default {
       this.close()
       this.$emit('update:open', false)
       this['update:open'](false)
+    },
+    s_focus(e) {
+      this.$emit('focus')
+      this.focus()
+    },
+    s_blur(e) {
+      this.$emit('blur')
+      this.blur()
     },
     onChange(value) {
       this.s_open = value
@@ -239,6 +250,7 @@ export default {
     
     .n-popup-container {
       position: absolute;
+      outline: none;
       &.n-absoluted {
         display: none;
       }

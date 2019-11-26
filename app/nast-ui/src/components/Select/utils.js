@@ -20,6 +20,7 @@ const dropdownProps = (self) => {
 
 const inputProps = (self) => {
   return {
+    clear: self.clear,
     name: self.name,
     title: self.title,
     value: self.value,

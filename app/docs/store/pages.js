@@ -13,6 +13,7 @@ export default {
       progress: { route: 'progress', parent: 'components', },
       loader: { route: 'loader', parent: 'components', },
       select: { route: 'select', parent: 'components', },
+      list: { route: 'list', parent: 'components', },
   
       directives: { icon: 'sitemap', route: 'directives', parent: 'index', },
       konstructor: { icon: 'sitemap', route: 'konstructor', parent: 'index', },
@@ -26,6 +27,7 @@ export default {
         { name: 'input', },
         { name: 'loader', },
         { name: 'select', },
+        { name: 'list', },
       ], },
       { name: 'baseComponentsGroup', icon: 'folder', children: [
         { name: 'popup', },
@@ -44,6 +46,7 @@ export default {
       input: 'Input',
       loader: 'Loader',
       select: 'Select',
+      list: 'List',
       directives: 'Директивы',
       konstructor: 'Конструктор',
       

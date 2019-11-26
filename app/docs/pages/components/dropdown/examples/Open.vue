@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="example-open">
     <n-dropdown :data="data" :value.sync="selected" open>
       <n-button icon-right="angle-down">Open</n-button>
     </n-dropdown>
@@ -20,5 +20,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.example-open {
+  padding-bottom: 140px;
+}
 </style>

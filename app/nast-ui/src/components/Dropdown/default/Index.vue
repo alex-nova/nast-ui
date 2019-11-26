@@ -1,6 +1,6 @@
 <template>
   <div ref="dropdown" class="n-dropdown">
-    <n-popup ref="popup" v-click-outside="clickOutside" :open.sync="s_open">
+    <n-popup ref="popup" v-click-outside="clickOutside" :open.sync="s_open" :fit="fit">
       <template #action>
         <slot>open</slot>
       </template>
@@ -17,9 +17,9 @@
           </template>
         </div>
         <div ref="items" :class="[ 'n-items', {'n-loading': loading}, ]" @scroll="s_scroll">
-          <n-loader :loading="loading" />
+          <n-loader :loading="Boolean(loading)" />
           <template v-if="s_data.length">
-            <template v-for="(item, i) in s_data">
+            <template v-for="(item, i) in searchedData">
               <n-dropdown-group v-if="isGroup(item)" :key="getValue(item)" :value="item" :indexes="[ i, ]"
                                 :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
                 <template #group>
@@ -44,9 +44,10 @@
 
 <script>
 import isArray from 'lodash/isArray'
-import isObject from 'lodash/isObject'
-import isFunction from 'lodash/isFunction'
 import debounce from 'lodash/debounce'
+import throttle from 'lodash/throttle'
+import filter from 'lodash/filter'
+import { getValue, getTitle, } from 'nast-ui/src/_utils/functions'
 import props from './../props'
 import clickOutside from 'nast-ui/src/directives/click-outside'
 
@@ -56,12 +57,13 @@ export default {
   mixins: [ props, ],
   data() {
     return {
-      s_open: this.open,
+      s_open: this.open || false,
       s_data: this.data,
+      searchedData: [],
       selected: [],
       parents: [], // открытые на данный момент группы
       indexes: [], // TODO скорее всего не нужно
-      loading: false,
+      loading: 0,
       page: 0,
       total: null,
     }
@@ -73,14 +75,30 @@ export default {
     multi() {
       return isArray(this.value)
     },
+    s_search() {
+      let search = isArray(this.search) ? this.search : [ this.search, ]
+      search = filter(search, (s) => s.length >= 3)
+      return search
+    },
     s_closeOnSelect() {
       return this.closeOnSelect !== null ? this.closeOnSelect : !this.multi
+    },
+    s_filterBySearch() {
+      if (this.filterBySearch === null) {
+        return !this.load
+      }
+      return this.filterBySearch
     },
   },
   watch: {
     open(value) {
       this.s_open = value
+    },
+    s_open(value) {
       if (value) {
+        if (this.load) {
+          this.s_data = []
+        }
         this.update()
       }
     },
@@ -88,9 +106,17 @@ export default {
       this.s_data = value
     },
     s_data(value) {
+      this.computeData(value, this.s_search)
       this.$nextTick(() => {
         this.$refs.popup.update()
       })
+    },
+    s_search(value) {
+      if (this.load) {
+        this.update()
+      } else {
+        this.computeData(this.s_data, value)
+      }
     },
   },
   mounted() {
@@ -98,33 +124,49 @@ export default {
       this.update()
     }
     this.action.addEventListener('click', this.actionClick)
+    this.computeData(this.s_data, this.s_search)
   },
   beforeDestroy() {
     this.action.removeEventListener('click', this.actionClick)
   },
   methods: {
-    getTitle(item) {
-      if (isObject(item)) {
-        return isFunction(this.itemTitle) ? this.itemTitle(item) : item[this.itemTitle]
+    computeData(dataProp, search) {
+      let data = dataProp
+      if (this.s_filterBySearch) {
+        if (search.length) {
+          data = filter(data, (item) => {
+            const title = this.getTitle(item)
+            for (const i in search) {
+              if ({}.hasOwnProperty.call(search, i)) {
+                const string = search[i]
+                if (title.toUpperCase().includes(string.toUpperCase())) {
+                  return true
+                }
+              }
+            }
+            return false
+          })
+        }
       }
-      return item
+      this.searchedData = data
+    },
+    getTitle(item) {
+      return getTitle(item, this.itemTitle)
     },
     getValue(item) {
-      const value = isObject(item) ? item[this.itemValue] : item
-      if (value === undefined) {
-        console.error(`Nast Dropdown: field ${this.itemValue} was not found in item!`)
-      }
-      return value
+      return getValue(item, this.itemValue)
     },
     actionClick() {
       this.toggle()
     },
     toggle(valueProp) {
       const value = valueProp === undefined ? !this.s_open : valueProp
-      if (value) {
+      if (this.value === null && value) {
         this.update()
       }
-      this.s_open = value
+      if (this.open === null) {
+        this.s_open = value
+      }
       this.$emit('update:open', value)
     },
     clickOutside(event) {
@@ -137,6 +179,7 @@ export default {
       this.indexes.length = index
       
       if (this.load) {
+        this.s_data = []
         this.update()
       } else {
         this.s_data = index === 0 ? this.data : this.parents[index-1][this.itemChildren]
@@ -147,6 +190,7 @@ export default {
       this.indexes = [ ...this.indexes, indexes[0], ]
       
       if (item.children === true && this.load) {
+        this.s_data = []
         this.update()
       } else {
         this.s_data = item[this.itemChildren]
@@ -191,44 +235,44 @@ export default {
       this.select(item, this.parents)
     },
     s_scroll: debounce(function(event = null) {
-      const target = this.$refs.items
-      if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
-        this.loadNextPage()
-      } else {
-        this.loading = false
-      }
-  
-      if (event) { // Don't fire event if s_scroll called from code
-        this.$emit('scroll', event)
-        this.scroll(event)
-      }
+      this.checkScroll()
+      
+      this.$emit('scroll', event)
+      this.scroll(event)
     }, 100),
+    checkScroll() {
+      const target = this.$refs.items
+      if (target && this.load) {
+        if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
+          this.loadNextPage()
+        }
+      }
+    },
     loadNextPage() {
       if (this.total !== null) {
         if ((this.page + 1) * this.size < this.total) {
           this.s_load(this.page + 1)
-          return
         }
       }
-      this.loading = false
     },
     s_load(page) {
       if (this.load) {
-        const params = { page, size: this.size, }
+        const params = { page, size: this.size, search: this.search, }
         const promise = this.load(params, this.parents[this.parents.length - 1])
         
         if (promise) {
-          this.loading = true
+          this.loading++
           this.page = page
-          
-          if (page === 0) {
-            this.s_data = []
-          }
           
           promise.then((response) => {
             const data = this.getContent(response)
             this.total = this.getTotalCount(response)
             
+            if (this.page < params.page) { // if closed dropdown while loading data, it can load old data when dropdown opened again
+              this.loading--
+              return
+            }
+      
             if (this.page) {
               this.s_data = this.s_data.concat(data)
             } else {
@@ -236,26 +280,41 @@ export default {
             }
             
             this.$nextTick(() => {
-              this.s_scroll()
+              this.checkScroll()
+              this.$nextTick(() => {
+                this.loading--
+              })
             })
           })
         }
       }
     },
-    update() {
-      this.s_load(0)
+    s_focus(e) {
+      this.$emit('focus', e)
+      this.focus(e)
     },
+    s_blur(e) {
+      this.$emit('blur', e)
+      this.blur(e)
+    },
+    update: throttle(function() {
+      this.s_load(0)
+    }, 300),
     isArray,
   },
 }
 </script>
 
+<style lang="scss">
+  html {
+    --n-popup-width: 400px;
+  }
+</style>
 <style lang="scss" scoped>
   .n-dropdown {
-    --n-popup-width: 400px;
     
     .n-content {
-      font-size: .8em;
+      font-size: .8rem;
     
       .n-parents {
         box-shadow: 0 2px 2px -2px #9c9c9c;

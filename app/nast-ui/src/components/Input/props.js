@@ -1,12 +1,10 @@
 export default {
-  model: {
-    prop: 'value',
-    event: 'modelChange',
-  },
   props: {
     name: { type: String, default: () => `input-${Math.random()}`, },
     title: { type: String, default: '', },
     value: { type: [ String, Number, Object, Array, ], default: '', },
+    focused: { type: Boolean, default: null, },
+    clear: { type: Boolean, default: null, },
     type: { type: String, default: 'text', },
     placeholder: { type: String, default: '', },
     disabled: { type: Boolean, default: false, },
@@ -31,11 +29,12 @@ export default {
   
     click: { type: Function, default: (event) => {}, },
     input: { type: Function, default: (value, event) => {}, },
-    change: { type: Function, default: (value, event) => {}, },
-    focusin: { type: Function, default: (event) => {}, },
-    focusout: { type: Function, default: (event) => {}, },
     keydown: { type: Function, default: (event) => {}, },
     keyup: { type: Function, default: (event) => {}, },
+    focus: { type: Function, default: (event) => {}, },
+    blur: { type: Function, default: (event) => {}, },
+    'update:focused': { type: Function, default: (value) => {}, },
+    'update:value': { type: Function, default: (value) => {}, },
   },
   
   computed: {
@@ -64,17 +63,23 @@ export default {
         secondary: this.secondary,
         tertiary: this.tertiary,
         animate: this.animate,
+  
+        focused: this.focused,
+        clear: this.clear,
       }
     },
     events() {
       return {
         click: this.click,
         input: this.input,
-        change: this.change,
-        focusin: this.focusin,
-        focusout: this.focusout,
         keydown: this.keydown,
         keyup: this.keyup,
+        'update:focused': this['update:focused'],
+        'update:value': this['update:value'],
+      }
+    },
+    functions() {
+      return {
       }
     },
   },

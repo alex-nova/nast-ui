@@ -1,5 +1,5 @@
 <template>
-  <div :class="[ 'n-dropdown-item', { 'n-active': active, }, ]" @click="s_click">
+  <div class="n-list-item" @click="s_click">
     <slot :item="value">{{ getTitle(value) }}</slot>
   </div>
 </template>
@@ -9,29 +9,25 @@ import props from './../props'
 import { getTitle, } from 'nast-ui/src/_utils/functions'
 
 export default {
-  name: 'NDropdownItem',
+  name: 'NListItem',
   mixins: [ props, ],
   methods: {
     getTitle(item) {
       return getTitle(item, this.itemTitle)
     },
     s_click(event) {
-      this.click(this.value, this.indexes, event)
-      this.$emit('click', this.value, this.indexes, event)
+      this.click(this.value, event)
+      this.$emit('click', this.value, event)
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-  .n-dropdown-item {
-    padding: 12px 20px;
+  .n-list-item {
+    padding: 10px 20px;
     cursor: pointer;
     
-    &.n-active {
-      background: var(--primary);
-      color: var(--primary-text);
-    }
     &:not(.n-active):hover {
       background: var(--primary-t-10);
     }

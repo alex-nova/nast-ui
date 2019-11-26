@@ -94,6 +94,13 @@ $n-grid-breakpoints: $default-grid;
     --text-color: #222,
     --text-color-op: #ddd,
     --line-height: 1.5,
+  
+  
+    --transition-fast: 100ms ease-out,
+    --transition: 300ms ease-out,
+    --transition-slow: 500ms ease-out,
+    --border-radius: 4px,
+    --border-color: #aaa,
   );
   
   // options

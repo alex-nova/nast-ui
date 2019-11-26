@@ -18,6 +18,7 @@
   "scripts": {},
   "main": "index.js",
   "dependencies": {
+    "dragula": "^3.7.2",
     "lodash": "^4.*"
   },
   "peerDependencies": {

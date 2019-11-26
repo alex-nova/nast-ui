@@ -1,14 +1,14 @@
 <template>
-  <div v-click-outside="clickOutside" :class="[ 'n-dropdown-group', {open: isOpen}, ]">
+  <div v-click-outside="clickOutside" class="n-dropdown-group">
     <n-dropdown-item :value="value" :indexes="indexes"
                      :item-title="itemTitle" :item-value="itemValue" @click="(...p) => s_click(...p, true)">
       <template #default="{ item, }"><slot name="group" :item="item" /></template>
     </n-dropdown-item>
     
-    <div v-if="isOpen" class="n-dropdown">
-      <template v-for="(child, i) in value.children">
-        <template v-if="child.children">
-          <n-dropdown-group :key="getValue(child)" :item="child" :indexes="[ ...indexes, i, ]"
+    <div v-if="isOpen" class="n-content">
+      <template v-for="(child, i) in value[itemChildren]">
+        <template v-if="child[itemChildren]">
+          <n-dropdown-group :key="getValue(child)" :value="child" :indexes="[ ...indexes, i, ]"
                             :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
             <template #group="{ item, }"><slot name="group" :item="item" /></template>
             <template #default="{ item, }"><slot :item="item" /></template>
@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import isObject from 'lodash/isObject'
-import clickOutside from './../../../../directives/click-outside'
+import clickOutside from 'nast-ui/src/directives/click-outside'
+import { getValue, } from 'nast-ui/src/_utils/functions'
 import props from './../props'
 
 export default {
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     getValue(item) {
-      return isObject(item) ? item[this.itemValue] : item
+      return getValue(item, this.itemValue)
     },
     s_click(item, indexes, event, isGroup = false) {
       this.$emit('click', item, indexes, event, isGroup)

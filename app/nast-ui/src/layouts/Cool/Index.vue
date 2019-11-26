@@ -47,17 +47,12 @@ export default {
     --n-layout-sidebar-color: #999;
     --n-layout-sidebar-color-active: #fff;
     --n-layout-sidebar-item-offset: 20px;
-  
-  
-    --transition: 500ms ease-out;
-    --border-radius: 4px;
-    --border-color: #aaa;
-    --body-bg: #fbfbfd;
-    --content-bg: #fff;
   }
 </style>
 <style lang="scss" scoped>
   .n-layout-cool {
+    --body-bg: #fbfbfd;
+    
     overflow: hidden;
     
     .layout-content-wrapper {
