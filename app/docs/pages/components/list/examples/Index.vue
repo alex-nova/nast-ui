@@ -3,11 +3,14 @@
     <n-list :data="data" :sortable="sortable" />
     <n-button @click="sort">sort</n-button>
     <br />
-    <n-table :data="data" :columns="columns" />
+    
+    <n-datalist :data="data" />
   </div>
 </template>
 
 <script>
+import api from './../../../../../docs/config/api'
+
 export default {
   data: () => ({
     columns: [
@@ -90,9 +93,17 @@ export default {
     ],
     sortable: false,
   }),
+  mounted() {
+    this.load()
+  },
   methods: {
     sort() {
       this.sortable = !this.sortable
+    },
+    load() {
+      api.users.get(1).then((response) => {
+        console.log(response)
+      })
     },
   },
 }

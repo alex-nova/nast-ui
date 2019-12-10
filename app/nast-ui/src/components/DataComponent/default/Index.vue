@@ -1,90 +1,96 @@
 <template>
   <div class="n-data-component">
-  
+    <slot :data="computedData" />
   </div>
 </template>
 
 <script>
 import throttle from 'lodash/throttle'
-import filter from 'lodash/filter'
 import props from './../props'
+import { paginated, searched, sorted, } from './../utils'
 
 export default {
   name: 'NDataComponent',
   mixins: [ props, ],
   data() {
     return {
-      loading: 0,
+      loadedData: [],
       page: 1,
       total: 0,
-      s_data: this.data,
-      loadedData: [],
+      loading: 0,
+      stopped: false,
+    }
+  },
+  computed: {
+    computedData() {
+      const value = this.data ? this.paginated(this.sorted(this.filtered(this.searched(this.data)))) : this.loadedData
+      this.updated(value)
+      this.$emit('updated', value)
+      return value
+    },
+  },
+  mounted() {
+    if (this.data) {
+      this.updated(this.computedData)
+      this.$emit('updated', this.computedData)
     }
   },
   methods: {
-    computeData(data, search) {
-      let result = data
-      if (this.s_filterBySearch) {
-        if (search.length) {
-          result = filter(result, (item) => {
-            const title = this.getTitle(item)
-            for (const i in search) {
-              if ({}.hasOwnProperty.call(search, i)) {
-                const string = search[i]
-                if (title.toUpperCase().includes(string.toUpperCase())) {
-                  return true
-                }
-              }
-            }
-            return false
-          })
-        }
-      }
-      this.searchedData = result
+    update: throttle(function() {
+      this.s_load(1)
+    }, 200),
+    next() {
+      this.s_load(this.page + 1)
     },
-    s_load(page = this.firstPage, parentId = undefined) {
+    stop() {
+      this.stopped = true
+      this.loading = 0
+    },
+    s_load(page, parentId = undefined) {
       if (this.load) {
+        this.stopped = false
+        this.loading++
+        this.page = page
+        
         const params = {
-          page,
+          page: this.firstPage ? this.page : this.page - 1,
           size: this.size,
           search: this.search,
           parentId,
         }
+  
+        this.beforeLoad(params)
+        this.$emit('beforeLoad', params)
         
-        const promise = this.load(params)
-      
-        if (promise) {
-          this.loading++
-          this.page = page
-        
-          promise.then((response) => {
-            const data = this.getContent(response)
+        this.load(params).then((response) => {
+          if (!this.stopped) {
             this.total = this.getTotalCount(response)
-          
-            if (this.page < params.page) { // if closed dropdown while loading data, it can load old data when dropdown opened again
-              this.loading--
-              return
-            }
-          
-            if (this.page) {
-              this.s_data = this.s_data.concat(data)
-            } else {
-              this.s_data = data
-            }
-          
+            const data = this.getContent(response)
+            this.loadedData = (this.page === this.firstPage) ? data : this.loadedData.concat(data)
+  
             this.$nextTick(() => {
-              // this.checkScroll()
+              this.loaded()
+              this.$emit('loaded')
               this.$nextTick(() => {
                 this.loading--
               })
             })
-          })
-        }
+          }
+        })
       }
     },
-    update: throttle(function() {
-      this.s_load()
-    }, 300),
+    searched(data) {
+      return searched(data, this.search, this.fields)
+    },
+    filtered(data) {
+      return data
+    },
+    sorted(data) {
+      return sorted(data, this.sort, this.fields, this.sortFunction)
+    },
+    paginated(data) {
+      return paginated(data, this.page, this.size)
+    },
   },
 }
 </script>
