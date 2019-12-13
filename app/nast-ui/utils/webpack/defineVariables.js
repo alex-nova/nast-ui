@@ -33,11 +33,11 @@ const getComponents = (options, platform) => {
   const { presets = {}, themes = {}, layouts: layoutsConfig = [], } = options
   
   if (!presets.default) {
-    console.log('Nest, define variables: The default theme is not exist, components was not loaded.') // eslint-disable-line
+    console.log('nast-ui, define variables: The default theme is not exist, components was not loaded.') // eslint-disable-line
     presets.default = {}
   }
   if (!themes[platform]) {
-    console.log(`Nest, define variables: The platform ${platform} not found in config, using the default preset.`) // eslint-disable-line
+    console.log(`nast-ui, define variables: The platform ${platform} not found in config, using the default preset.`) // eslint-disable-line
   }
   
   const result = { $nwc: {}, $nwcc: {}, }
