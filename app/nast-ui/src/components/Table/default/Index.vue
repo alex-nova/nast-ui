@@ -38,22 +38,22 @@ export default {
     },
   },
   methods: {
-    columnStyle(cell, header = false) {
+    columnStyle(column, header = false) {
       const style = {}
       
       if (!header) {
-        if (cell.right) {
-          style.textAlign = 'right'
+        if (column.align) {
+          style.textAlign = column.align
         }
       }
       
-      style.minWidth = cell.minWidth
-      style.maxWidth = cell.maxWidth
+      style.minWidth = column.minWidth
+      style.maxWidth = column.maxWidth
   
       if (this.js) {
-        style.minWidth = cell.width
+        style.minWidth = column.width
       } else {
-        style.width = cell.width
+        style.width = column.width
       }
       
       return style
@@ -76,7 +76,7 @@ export default {
 
 <style lang="scss">
   html {
-    --n-table-cell-padding: 10px 10px;
+    --n-table-cell-padding: 12px 0;
     
     --n-table-cell-margin-top: 0px;
     --n-table-cell-margin-right: 0px;
@@ -84,10 +84,10 @@ export default {
     --n-table-cell-margin-left: 0px;
   
     --n-table-border-top-width: 1px;
-    --n-table-border-right-width: 1px;
+    --n-table-border-right-width: 0;
     --n-table-border-bottom-width: 1px;
-    --n-table-border-left-width: 1px;
-    --n-table-border: solid #aaa;
+    --n-table-border-left-width: 0;
+    --n-table-border: solid #e0e0e0;
   }
 </style>
 <style lang="scss" scoped>

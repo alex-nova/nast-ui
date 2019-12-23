@@ -5,8 +5,8 @@ module.exports = {
   
   pluginOptions: {
     nast: {
-      entry: 'app/docs/config',
       appDir: 'app/docs',
+      configDir: 'config',
     },
   },
 }

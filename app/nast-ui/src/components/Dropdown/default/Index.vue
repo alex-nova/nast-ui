@@ -1,6 +1,6 @@
 <template>
   <div ref="dropdown" class="n-dropdown">
-    <n-popup ref="popup" v-click-outside="clickOutside" :open.sync="s_open" :fit="fit">
+    <n-popup ref="popup" v-click-outside="clickOutside" :open.sync="s_open" :fit="fit" :up="up" :align="align" :side="side">
       <template #action>
         <slot>open</slot>
       </template>
@@ -24,13 +24,19 @@
                                 :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" @click="s_click">
                 <template #group>
                   <div class="n-group-item">
-                    <span class="n-text">{{ getTitle(item) }}</span>
+                    <div class="n-text">
+                      {{ getTitle(item) }}
+                    </div>
                     <n-icon icon="angle-down" />
                   </div>
                 </template>
               </n-dropdown-group>
               <n-dropdown-item v-else :key="getValue(item)" :value="item" :indexes="[ i, ]" :active="isActive(item)"
-                               :item-title="itemTitle" :item-value="itemValue" @click="s_click" />
+                               :item-title="itemTitle" :item-value="itemValue" @click="s_click">
+                <template #default="{item}">
+                  <slot name="item" :item="item" />
+                </template>
+              </n-dropdown-item>
             </template>
           </template>
           <div v-else-if="!loading" class="n-empty">

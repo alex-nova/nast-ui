@@ -38,7 +38,7 @@ export default {
     border-radius: var(--border-radius);
     margin: 20px;
 
-    .content {
+    & > .content {
       &>*:first-child {
         padding-top: var(--n-card-padding);
       }

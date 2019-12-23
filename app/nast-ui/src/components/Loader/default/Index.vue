@@ -2,7 +2,7 @@
   <div v-show="s_loading" class="n-loader">
     <div class="n-veil"></div>
     <div class="n-line">
-      <n-progress ref="progress" hidden :speed="200" />
+      <n-progress ref="progress" :hidden="hidden" :speed="200" />
     </div>
     <div :class="[ 'n-content', color, ]">
       <n-icon v-if="icon" :icon="icon" pulse />

@@ -1,10 +1,11 @@
 <template>
   <div class="n-layout-cool">
     <div class="layout-content-wrapper">
-      <layout-sidebar :menu="menu">
+      <layout-sidebar :menu="menu" :profile="profile">
         <template #logo><slot name="logo" /></template>
         <template #logo-min><slot name="logo-min" /></template>
         <template #avatar><slot name="avatar" /></template>
+        <template #name><slot name="name" /></template>
         <template #footer><slot name="footer" /></template>
       </layout-sidebar>
       
@@ -35,7 +36,8 @@ export default {
   name: 'NLayoutCool',
   components: { LayoutSidebar, },
   props: {
-    menu: { type: Array, default: () => [], },
+    menu: { type: Array, default: () => [], }, // [ { title: '', icon: '', route: '', children: '', } ]
+    profile: { type: Array, default: () => [], }, // [ { title: '', icon: '', route: '', }, ]
   },
 }
 </script>

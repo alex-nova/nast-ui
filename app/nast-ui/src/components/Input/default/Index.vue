@@ -22,6 +22,8 @@
       <n-icon v-if="nIcon && loading" icon="spinner" class="n-icon-right" pulse />
       <n-icon v-else-if="nIcon && (iconRight || iconRightInner)" :icon="iconRight || iconRightInner" class="n-icon-right" />
     </div>
+  
+    <div v-if="danger" class="n-message danger">{{ danger }}</div>
   </div>
 </template>
 
@@ -247,6 +249,11 @@ export default {
     padding-top: 1em;
     vertical-align: baseline;
     width: 100%;
+  
+  
+    .n-message {
+      color: var(--danger)
+    }
     
     .n-wrapper, .n-content {
       display: flex;
@@ -338,9 +345,6 @@ export default {
     .n-icon { margin-right: 7px; }
     .n-icon-right { margin-left: 7px; }
   
-    &.n-text {
-      .n-content { border-color: transparent; }
-    }
     &.n-disabled {
       opacity: .8;
       &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom-style: dotted; }
@@ -355,6 +359,9 @@ export default {
     &.n-focused {
       label { color: var(--primary); opacity: 1; }
       &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-color: var(--primary); }
+    }
+    &.n-text {
+      &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-color: transparent; }
     }
   }
 </style>

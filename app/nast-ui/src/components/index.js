@@ -19,6 +19,7 @@ import List from './List/default/Index.vue'
 import ListGroup from './List/_ListGroup/default/Index.vue'
 import ListItem from './List/_ListItem/default/Index.vue'
 import Loader from './Loader/default/Index.vue'
+import Modal from './Modal/default/Index.vue'
 import Navigation from './Navigation/default/Index.vue'
 import NavigationGroup from './Navigation/_NavigationGroup/default/Index.vue'
 import NavigationItem from './Navigation/_NavigationItem/default/Index.vue'
@@ -53,6 +54,7 @@ export default {
     Vue.component('nListGroup', ListGroup)
     Vue.component('nListItem', ListItem)
     Vue.component('nLoader', Loader)
+    Vue.component('nModal', Modal)
     Vue.component('nNavigation', Navigation)
     Vue.component('nNavigationGroup', NavigationGroup)
     Vue.component('nNavigationItem', NavigationItem)

@@ -3,6 +3,7 @@ export default {
     loading: { type: Boolean, default: false, },
     color: { type: String, default: 'primary', },
     icon: { type: String, default: 'spinner', },
+    hidden: { type: Boolean, default: false, },
   
     'update:loading': { type: Function, default: (value) => {}, },
   },

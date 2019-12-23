@@ -1,5 +1,5 @@
 
-module.exports = [
+export default [
   { path: '/', component: () => import('./../App'), children: [
     { path: '', component: () => import('./../layouts/main/Index'), children: [
       { path: '', name: 'index', component: () => import('./../pages/index/Index'), },

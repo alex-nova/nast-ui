@@ -6,8 +6,27 @@
     </div>
   
     <div class="n-profile">
-      <div class="n-avatar"><slot name="avatar" /></div>
-      <div class="n-name">Administrator</div>
+      <n-dropdown v-if="profile.length" :data="profile" fit>
+        <div class="n-content n-clickable">
+          <div class="n-avatar"><slot name="avatar" /></div>
+          <div class="n-name"><slot name="name" /></div>
+          <span class="n-arrow">
+            <svg x="0px" y="0px" viewBox="0 0 14 30">
+              <path d="M9.148 2.352l-4.148 4.148 4.148 4.148q0.148 0.148 0.148 0.352t-0.148 0.352l-1.297 1.297q-0.148
+                0.148-0.352 0.148t-0.352-0.148l-5.797-5.797q-0.148-0.148-0.148-0.352t0.148-0.352l5.797-5.797q0.148-0.148
+                0.352-0.148t0.352 0.148l1.297 1.297q0.148 0.148 0.148 0.352t-0.148 0.352z"
+              ></path>
+            </svg>
+          </span>
+        </div>
+        <template #item="{item}">
+          <n-link :to="item.route"><n-icon v-if="item.icon" :icon="item.icon" />{{ item.title }}</n-link>
+        </template>
+      </n-dropdown>
+      <div v-else class="n-content">
+        <div class="n-avatar"><slot name="avatar" /></div>
+        <div class="n-name">Administrator</div>
+      </div>
     </div>
   
     <layout-navigation :menu="menu" />
@@ -39,6 +58,7 @@ export default {
   components: { LayoutNavigation, },
   props: {
     menu: { type: Array, default: () => [], },
+    profile: { type: Array, default: () => [], },
   },
   data: () => ({
     minimized: false,
@@ -84,12 +104,41 @@ export default {
     }
     
     .n-profile {
-      padding: 12px 0 12px 0;
       margin: 0 0 10px 0;
-      display: flex;
-      align-items: center;
-      border-top: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
+      --content-bg: #2f2f2f;
+      --primary-t-10: rgba(0, 0, 0, 0.2);
+      
+      .n-link {
+        text-decoration: none;
+        color: inherit;
+        .n-icon {
+          margin-right: 10px;
+        }
+      }
+      .n-content {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px 12px 0;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        &.n-clickable {
+          cursor: pointer;
+        }
+        
+        .n-name {
+          flex-grow: 1;
+        }
+        .n-arrow {
+          opacity: .5;
+          width: 8px;
+          height: 8px;
+          fill: var(--n-layout-sidebar-color);
+          background-repeat: no-repeat;
+          transition: transform .3s;
+          transform: rotate(-90deg);
+        }
+      }
+      
       
       &::v-deep img {
         border: 1px solid #fff;

@@ -1,6 +1,6 @@
 <template>
   <div :class="[ 'n-dropdown-item', { 'n-active': active, }, ]" @click="s_click">
-    <slot :item="value">{{ getTitle(value) }}</slot>
+    <slot :item="value"><span>{{ getTitle(value) }}</span></slot>
   </div>
 </template>
 
@@ -25,8 +25,12 @@ export default {
 
 <style lang="scss" scoped>
   .n-dropdown-item {
-    padding: 12px 20px;
-    cursor: pointer;
+    &::v-deep > * {
+      display: inline-block;
+      width: 100%;
+      padding: 12px 20px;
+      cursor: pointer;
+    }
     
     &.n-active {
       background: var(--primary);
