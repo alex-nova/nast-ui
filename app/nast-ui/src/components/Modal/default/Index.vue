@@ -35,8 +35,8 @@ export default {
       position: fixed;
       z-index: 1001;
       top: 20%;
-      left: calc(50% - 250px);
-      width: 500px;
+      left: calc(50% - 240px);
+      width: 480px;
       
       &>header {
         background: var(--body-bg);
