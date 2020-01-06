@@ -79,6 +79,11 @@ $n-grid-breakpoints: $default-grid;
     
     --body-bg: #fafafa,
     --content-bg: #fff,
+    --sidebar-bg: #2a2a2a,
+    --content-padding: 20px,
+    
+    --text-color: #222,
+    --sidebar-color: #ddd,
     
     --link-color: var(--primary),
     --link-color-op: #fff,
@@ -91,8 +96,6 @@ $n-grid-breakpoints: $default-grid;
     --h4-font: 500 1.3em var(--header-font),
     --h5-font: 600 1.1em var(--header-font),
     --h6-font: 600 1em var(--header-font),
-    --text-color: #222,
-    --text-color-op: #ddd,
     --line-height: 1.5,
   
   

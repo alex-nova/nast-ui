@@ -43,7 +43,7 @@ export default {
         opacity: .5;
         width: 8px;
         height: 8px;
-        fill: var(--text-color-op);
+        fill: var(--sidebar-color);
         background-repeat: no-repeat;
         transition: transform .3s;
         transform: rotate(-90deg);

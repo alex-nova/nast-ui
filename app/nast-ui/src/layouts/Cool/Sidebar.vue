@@ -81,7 +81,7 @@ export default {
     &::v-deep {
       a { color: var(--n-layout-sidebar-color-active); }
       &>.n-content {
-        background: #2a2a2a;
+        background: var(--sidebar-bg);
         color: var(--n-layout-sidebar-color);
         font-size: .9em;
         padding-left: var(--n-layout-padding);

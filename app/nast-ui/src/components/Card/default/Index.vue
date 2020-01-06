@@ -23,9 +23,10 @@ export default {
 }
 </script>
 
+<style lang="scss" src="./../../../_utils/cssVariables.scss"></style>
 <style lang="scss">
   html {
-    --n-card-padding: 25px;
+    --n-card-padding: var(--content-padding);
   }
 </style>
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <template>
-  <div :class="[ 'n-items', { vertical, }, ]">
-    <div class="content"><slot /></div>
+  <div :class="[ 'n-items', {'n-vertical':vertical}, ]">
+    <slot />
   </div>
 </template>
 
@@ -15,22 +15,30 @@ export default {
 
 <style lang="scss">
   html {
-    --n-items-margin: 4px;
+    --n-items-margin: 5px;
   }
 </style>
 <style scoped lang="scss">
   .n-items {
-    margin: calc(-1 * var(--n-items-margin));
-    
-    .content {
-      display: inline-block;
-      width: 100%;
+    &.n-vertical {
+      margin: calc(-1 * var(--n-items-margin)) 0;
+      display: flex;
+      flex-direction: column;
+      
+      & > * {
+        margin: var(--n-items-margin) 0;
+      }
     }
-    .content::v-deep >* {
-      margin: var(--n-items-margin);
-      display: inline-block;
+    
+    &:not(.n-vertical) {
+      margin: calc(-1 * var(--n-items-margin));
+      
+      &::v-deep >* {
+        margin: var(--n-items-margin);
+        display: inline-block;
+        vertical-align: top;
+      }
     }
     
-    &+.n-items { margin-top: calc(2 * var(--n-items-margin)); }
   }
 </style>

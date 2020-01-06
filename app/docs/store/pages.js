@@ -14,6 +14,7 @@ export default {
       loader: { route: 'loader', parent: 'components', },
       select: { route: 'select', parent: 'components', },
       list: { route: 'list', parent: 'components', },
+      modalCard: { route: 'modalCard', parent: 'components', },
   
       directives: { icon: 'sitemap', route: 'directives', parent: 'index', },
       konstructor: { icon: 'sitemap', route: 'konstructor', parent: 'index', },
@@ -28,6 +29,7 @@ export default {
         { name: 'loader', },
         { name: 'select', },
         { name: 'list', },
+        { name: 'modalCard', },
       ], },
       { name: 'baseComponentsGroup', icon: 'folder', children: [
         { name: 'popup', },
@@ -47,6 +49,7 @@ export default {
       loader: 'Loader',
       select: 'Select',
       list: 'List',
+      modalCard: 'ModalCard',
       directives: 'Директивы',
       konstructor: 'Конструктор',
       

@@ -16,6 +16,8 @@
         <n-link to="#">Сообщить об ошибке</n-link>
       </div>
     </n-layout-cool>
+    
+    <Cards />
   </div>
 </template>
 
@@ -24,10 +26,11 @@ import logo from './../../assets/images/logo.png'
 import logoMin from './../../assets/images/logo-min.png'
 import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
+import Cards from 'cards/Index'
 
 export default {
   name: 'MainLayout',
-  components: { PageTitle, },
+  components: { PageTitle, Cards, },
   data: () => ({
     logo,
     logoMin,

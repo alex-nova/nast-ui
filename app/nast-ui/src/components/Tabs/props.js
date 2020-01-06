@@ -1,11 +1,15 @@
 
 export default {
   name: 'NTabs', // TODO надо везде
+  
   props: {
-    active: { type: String, default: '', }, // name of a slot
-    tabs: { type: Array, default: () => [], }, // [ { name: '', content: '', }, ]
+    data: { type: Array, default: () => [], }, // [ { name: '', title: '', }, ]
+    content: { type: Object, default: null, },
+    active: { type: String, default: '', },
+    name: { type: String, default: 'tabsDefault', },
+    disabled: { type: Boolean, default: false, },
     
-    change: { type: Function, default: () => {}, },
+    'update:active': { type: Function, default: () => {}, },
   },
   
   computed: {

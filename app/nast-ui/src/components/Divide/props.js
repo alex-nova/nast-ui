@@ -1,20 +1,17 @@
 
 export default {
-  name: 'NTab',
-  
   props: {
-    data: { type: Array, default: () => [], },
+    vertical: { type: Boolean, default: false, },
   },
   
   computed: {
     props() {
       return {
-        data: this.data,
+        vertical: this.vertical,
       }
     },
     events() {
-      return {
-      }
+      return {}
     },
   },
 }
