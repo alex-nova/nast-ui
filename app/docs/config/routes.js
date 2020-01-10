@@ -3,7 +3,7 @@ export default [
   { path: '/', component: () => import('./../App'), children: [
     { path: '', component: () => import('./../layouts/main/Index'), children: [
       { path: '', name: 'index', component: () => import('./../pages/index/Index'), },
-      
+
       { path: 'components', name: 'components', component: () => import('./../pages/components/Index'), },
       { path: 'components/button', name: 'button', component: () => import('./../pages/components/button/Index'), },
       { path: 'components/dropdown', name: 'dropdown', component: () => import('./../pages/components/dropdown/Index'), },
@@ -13,9 +13,11 @@ export default [
       { path: 'components/select', name: 'select', component: () => import('./../pages/components/select/Index'), },
       { path: 'components/list', name: 'list', component: () => import('./../pages/components/list/Index'), },
       { path: 'components/modalCard', name: 'modalCard', component: () => import('./../pages/components/modalCard/Index'), },
-      
+      { path: 'components/image', name: 'image', component: () => import('./../pages/components/image/Index'), },
+      { path: 'components/upload', name: 'upload', component: () => import('./../pages/components/upload/Index'), },
+
       { path: 'components/popup', name: 'popup', component: () => import('./../pages/components/popup/Index'), },
-    
+
       { path: 'directives', name: 'directives', component: () => import('./../pages/directives/Index'), },
       { path: 'konstructor', name: 'konstructor', component: () => import('./../pages/konstructor/Index'), },
     ], },

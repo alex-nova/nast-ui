@@ -2,7 +2,7 @@
   <div v-click-outside="clickOutside" :class="[ 'n-input', ...containerClasses, ]" @click="s_click">
     <div class="n-wrapper">
       <n-icon v-if="nIcon && (icon || iconInner)" :icon="icon || iconInner" class="n-icon" />
-      
+
       <div class="n-content">
         <div class="n-items">
           <label v-if="title" :for="name" :class="[ {'n-active': titleIsActive}, ]">{{ title }}</label>
@@ -22,7 +22,7 @@
       <n-icon v-if="nIcon && loading" icon="spinner" class="n-icon-right" pulse />
       <n-icon v-else-if="nIcon && (iconRight || iconRightInner)" :icon="iconRight || iconRightInner" class="n-icon-right" />
     </div>
-  
+
     <div v-if="danger" class="n-message danger">{{ danger }}</div>
   </div>
 </template>
@@ -147,7 +147,7 @@ export default {
     },
     updateFocus(value) {
       if (this.s_focused === value) return
-      
+
       if (this.focused === null) {
         this.s_focused = value
       }
@@ -191,7 +191,7 @@ export default {
     s_keydown(e) {
       this.keydown(e)
       this.$emit('keydown', e)
-      
+
       if (e.key === 'Backspace' && this.selected.length) {
         this.lastValue = this.s_value
       }
@@ -199,7 +199,7 @@ export default {
     s_keyup(e) {
       this.keyup(e)
       this.$emit('keyup', e)
-  
+
       if (e.key === 'Backspace' && this.selected.length && !this.lastValue) {
         const selected = this.selected.slice(0, -1)
         this.s_change(selected, e)
@@ -228,7 +228,7 @@ export default {
       } else {
         this.s_change(null)
       }
-  
+
       this.input('')
       this.$emit('input', '')
     },
@@ -249,23 +249,23 @@ export default {
     padding-top: 1em;
     vertical-align: baseline;
     width: 100%;
-  
-  
+
+
     .n-message {
       color: var(--danger)
     }
-    
+
     .n-wrapper, .n-content {
       display: flex;
       align-items: center;
       width: 100%;
     }
-    
+
     .n-items {
       cursor: text;
       position: relative;
       width: 100%;
-  
+
       label {
         color: inherit;
         opacity: .5;
@@ -282,13 +282,13 @@ export default {
         transition: top .2s ease-out, font-size .2s ease-out;
         text-align: initial;
         pointer-events: none;
-    
+
         &.n-active {
           top: -1em;
           font-size: .8em;
         }
       }
-  
+
       .n-margin {
         display: flex;
         align-items: center;
@@ -308,7 +308,7 @@ export default {
           display: flex;
           align-items: center;
           position: relative;
-          
+
           .n-text {
             display: inline-block;
             padding-right: 8px;
@@ -331,7 +331,7 @@ export default {
       cursor: pointer;
     }
     .n-remove {
-    
+
     }
     .n-clear {
       margin: -5px 0;
@@ -341,10 +341,10 @@ export default {
         opacity: .5;
       }
     }
-  
+
     .n-icon { margin-right: 7px; }
     .n-icon-right { margin-left: 7px; }
-  
+
     &.n-disabled {
       opacity: .8;
       &.n-inner-icon, &:not(.n-inner-icon) .n-content { border-bottom-style: dotted; }

@@ -2,7 +2,7 @@ export default {
   props: {
     name: { type: String, default: () => `input-${Math.random()}`, },
     title: { type: String, default: '', },
-    value: { type: [ String, Number, Object, Array, ], default: '', },
+    value: { type: [ String, Number, Object, Array, ], default: null, },
     focused: { type: Boolean, default: null, },
     clear: { type: Boolean, default: null, },
     type: { type: String, default: 'text', },
@@ -10,13 +10,13 @@ export default {
     disabled: { type: Boolean, default: false, },
     text: { type: [ Boolean, String, ], default: false, },
     inline: { type: Boolean, default: false, },
-    
+
     icon: { type: String, default: '', },
     iconInner: { type: String, default: '', },
     iconRight: { type: String, default: '', },
     iconRightInner: { type: String, default: '', },
     loading: { type: Boolean, default: false, },
-    
+
     primary: { type: [ String, Boolean, ], default: false, },
     success: { type: [ String, Boolean, ], default: false, },
     warning: { type: [ String, Boolean, ], default: false, },
@@ -24,9 +24,9 @@ export default {
     secondary: { type: [ String, Boolean, ], default: false, },
     tertiary: { type: [ String, Boolean, ], default: false, },
     animate: { type: String, default: 'shake', },
-    
+
     itemTitle: { type: [ Function, String, ], default: (item) => item.title, },
-  
+
     click: { type: Function, default: (event) => {}, },
     input: { type: Function, default: (value, event) => {}, },
     keydown: { type: Function, default: (event) => {}, },
@@ -36,7 +36,7 @@ export default {
     'update:focused': { type: Function, default: (value) => {}, },
     'update:value': { type: Function, default: (value) => {}, },
   },
-  
+
   computed: {
     props() {
       return {
@@ -48,13 +48,13 @@ export default {
         disabled: this.disabled,
         text: this.text,
         inline: this.inline,
-        
+
         icon: this.icon,
         iconInner: this.iconInner,
         iconRight: this.iconRight,
         iconRightInner: this.iconRightInner,
         loading: this.loading,
-        
+
         // active: this.active,
         primary: this.primary,
         success: this.success,
@@ -63,7 +63,7 @@ export default {
         secondary: this.secondary,
         tertiary: this.tertiary,
         animate: this.animate,
-  
+
         focused: this.focused,
         clear: this.clear,
       }

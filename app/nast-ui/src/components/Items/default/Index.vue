@@ -15,7 +15,7 @@ export default {
 
 <style lang="scss">
   html {
-    --n-items-margin: 5px;
+    --n-items-margin: 8px;
   }
 </style>
 <style scoped lang="scss">
@@ -24,21 +24,21 @@ export default {
       margin: calc(-1 * var(--n-items-margin)) 0;
       display: flex;
       flex-direction: column;
-      
+
       & > * {
         margin: var(--n-items-margin) 0;
       }
     }
-    
+
     &:not(.n-vertical) {
       margin: calc(-1 * var(--n-items-margin));
-      
+
       &::v-deep >* {
         margin: var(--n-items-margin);
         display: inline-block;
         vertical-align: top;
       }
     }
-    
+
   }
 </style>

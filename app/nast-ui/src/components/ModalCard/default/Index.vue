@@ -69,7 +69,7 @@ export default {
 
 <style lang="scss">
   body {
-    overflow: hidden;
+    /*overflow: hidden;*/
   }
 </style>
 <style lang="scss" scoped>
@@ -89,7 +89,7 @@ export default {
       border-top-left-radius: calc(var(--border-radius) * 3);
       border-bottom-left-radius: calc(var(--border-radius) * 3);
       box-shadow: -5px 0 5px 0 rgba(0, 0, 0, .2);
-      
+
       &>header {
         background: var(--sidebar-bg);
         color: var(--sidebar-color);
@@ -121,8 +121,8 @@ export default {
         z-index: 1;
       }
     }
-    
-    
+
+
     .n-dark {
       position: fixed;
       top: 0;

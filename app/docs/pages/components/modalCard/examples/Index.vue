@@ -5,9 +5,7 @@
       <template #body>
         <n-divide class="body">
           <n-items class="content">
-            <div class="avatar">
-              <img :src="avatar" alt="avatar" />
-            </div>
+            <n-image class="avatar" :src="avatar" alt="avatar" round />
             <div>
               <div>{{ $form.get('name') }} {{ $form.get('lastname') }}</div>
               <div>Online</div>
@@ -40,7 +38,7 @@
         </n-divide>
       </template>
     </n-modal-card>
-  
+
     <n-button @click="open = true">Открыть</n-button>
   </div>
 </template>
@@ -74,17 +72,15 @@ export default {
     .content {
       --n-items-margin: 10px;
     }
-    
+
     & > .n-items > * {
       vertical-align: middle;
     }
-    
+
     .avatar {
-      display: inline-flex;
-      img {
-        width: 80px;
-        height: 80px;
-      }
+      width: 80px;
+      height: 80px;
+      --n-image-border: 3px solid #fff;
     }
   }
 }

@@ -12,8 +12,10 @@ import Divide from './Divide/default/Index.vue'
 import Dropdown from './Dropdown/default/Index.vue'
 import DropdownItem from './Dropdown/_DropdownItem/default/Index.vue'
 import DropdownGroup from './Dropdown/_DropdownGroup/default/Index.vue'
+import FormItem from './FormItem/default/Index.vue'
 import Header from './Header/default/Index.vue'
 import Icon from './Icon/default/Index.vue'
+import Image from './Image/default/Index.vue'
 import Input from './Input/default/Index.vue'
 import Items from './Items/default/Index.vue'
 import Link from './Link/default/Index.vue'
@@ -33,6 +35,7 @@ import Table from './Table/default/Index.vue'
 import Tabs from './Tabs/default/Index.vue'
 import TabsContent from './Tabs/_TabsContent/default/Index.vue'
 import Typography from './Typography/default/Index.vue'
+import Upload from './Upload/default/Index.vue'
 
 
 export default {
@@ -51,8 +54,10 @@ export default {
     Vue.component('nDropdown', Dropdown)
     Vue.component('nDropdownItem', DropdownItem)
     Vue.component('nDropdownGroup', DropdownGroup)
+    Vue.component('nFormItem', FormItem)
     Vue.component('nHeader', Header)
     Vue.component('nIcon', Icon)
+    Vue.component('nImage', Image)
     Vue.component('nInput', Input)
     Vue.component('nItems', Items)
     Vue.component('nLink', Link)
@@ -72,5 +77,6 @@ export default {
     Vue.component('nTabs', Tabs)
     Vue.component('nTabsContent', TabsContent)
     Vue.component('nTypography', Typography)
+    Vue.component('nUpload', Upload)
   },
 }
