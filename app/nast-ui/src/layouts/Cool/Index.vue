@@ -116,10 +116,6 @@ export default {
         }
       }
     }
-  
-    &::v-deep .n-card {
-      margin: 20px var(--n-layout-content-padding);
-    }
     
     &::v-deep * {
       &::-webkit-scrollbar {

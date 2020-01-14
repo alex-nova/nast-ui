@@ -1,7 +1,8 @@
 <template>
-  <div :class="[ 'n-select', {'n-inline': inline}, {'n-focused': focused}, ]"
-       tabindex="-1" @click="updateFocused(true)" @focusin="onFocusin" @focusout="onFocusout">
-    <n-dropdown ref="dropdown" v-bind="dropdownProps" :value.sync="s_value" fit :open="focused" :search="search" v-on="dropdownEvents">
+  <div :class="[ 'n-select', {'n-inline': inline}, {'n-focused': focused}, ]" tabindex="-1" @click="updateFocused(true)"
+       @focusin="onFocusin" @focusout="onFocusout">
+    <n-input v-if="text" ref="input" v-bind="inputProps" :value="s_value" />
+    <n-dropdown v-else ref="dropdown" v-bind="dropdownProps" :value.sync="s_value" fit :open="focused" :search="search" v-on="dropdownEvents">
       <n-input ref="input" v-bind="inputProps" :focused="focused" :value="s_value" icon-right-inner="angle-down" v-on="inputEvents" />
     </n-dropdown>
   </div>
@@ -60,13 +61,17 @@ export default {
   },
   methods: {
     onFocusin(e) {
-      this.updateFocused(true)
+      if (this.$refs.dropdown) {
+        this.updateFocused(true)
+      }
     },
     onFocusout(e) {
-      const popup = this.$refs.dropdown.$el.querySelector('.n-popup-container')
-      const input = this.$refs.input.$el.querySelector('input')
-      if (popup !== e.relatedTarget && input !== e.relatedTarget) {
-        this.updateFocused(false)
+      if (this.$refs.dropdown) {
+        const popup = this.$refs.dropdown.$el.querySelector('.n-popup-container')
+        const input = this.$refs.input.$el.querySelector('input')
+        if (popup !== e.relatedTarget && input !== e.relatedTarget) {
+          this.updateFocused(false)
+        }
       }
     },
     s_input(value) {
@@ -82,10 +87,12 @@ export default {
       }
     },
     updateFocused(value) {
-      if (value) {
-        this.$refs.input.focus()
+      if (this.$refs.dropdown) {
+        if (value) {
+          this.$refs.input.focus()
+        }
+        this.focused = value
       }
-      this.focused = value
     },
     getValue(item) {
       return getValue(item, this.itemValue)

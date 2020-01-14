@@ -17,7 +17,7 @@
             <n-mini-input v-else ref="input" v-bind="inputProps" v-on="inputEvents" />
           </div>
         </div>
-        <div v-if="nIcon && hasClearIcon" class="n-clear" @click="s_clear"><n-icon v-if="nIcon" icon="times" /></div>
+        <div v-if="nIcon && hasClearIcon && !text" class="n-clear" @click="s_clear"><n-icon v-if="nIcon" icon="times" /></div>
       </div>
       <n-icon v-if="nIcon && loading" icon="spinner" class="n-icon-right" pulse />
       <n-icon v-else-if="nIcon && (iconRight || iconRightInner)" :icon="iconRight || iconRightInner" class="n-icon-right" />
@@ -114,10 +114,12 @@ export default {
     },
     focused(value) {
       this.s_focused = value
-      if (value) {
-        this.$refs.input.focus()
-      } else {
-        this.$refs.input.blur()
+      if (this.$refs.input) {
+        if (value) {
+          this.$refs.input.focus()
+        } else {
+          this.$refs.input.blur()
+        }
       }
     },
   },
@@ -170,7 +172,9 @@ export default {
       this.$emit('input', value, e)
     },
     s_click(e) {
-      this.$refs.input.focus()
+      if (this.$refs.input) {
+        this.$refs.input.focus()
+      }
       this.click(e)
       this.$emit('click', e)
     },

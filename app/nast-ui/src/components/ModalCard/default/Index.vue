@@ -1,15 +1,16 @@
 <template>
   <div v-if="s_value" class="n-modal-card">
     <div class="n-modal-content">
+      <n-loader :loading="loading" />
       <header><slot name="header"></slot></header>
       <section v-if="$slots.body"><slot name="body"></slot></section>
-      <nav><n-tabs :name="name" :data="tabs" :disabled="disabled" /></nav>
+      <nav><n-tabs :name="name" :data="tabs" :disabled="disabled" @update:active="changeTab" /></nav>
       <main>
         <n-tabs-content :name="name">
           <template v-for="t in tabs" #[t.name]><slot :name="'tab.'+t.name" /></template>
         </n-tabs-content>
       </main>
-      <footer><slot name="footer"></slot></footer>
+      <footer><slot name="footer" :tab="tab"></slot></footer>
     </div>
     <div class="n-dark" @click="change(false)"></div>
   </div>
@@ -23,6 +24,7 @@ export default {
   data() {
     return {
       s_value: this.value,
+      tab: this.tabs[0],
     }
   },
   watch: {
@@ -48,6 +50,10 @@ export default {
     this.syncUrl()
   },
   methods: {
+    changeTab(value) {
+      // TODO eq
+      this.tab = $n.find(this.tabs, [ 'name', value, ])
+    },
     isInUrl() {
       return this.$route.query[this.queryParam] === this.name
     },

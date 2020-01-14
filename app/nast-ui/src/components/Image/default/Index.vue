@@ -10,10 +10,10 @@ import props from './../props'
 export default {
   name: 'NImage',
   mixins: [ props, ],
-  data() {
-    return {
-      s_src: this.src,
-    }
+  computed: {
+    s_src() {
+      return !this.mock ? this.src : 'https://dummyimage.com/800x800/9e9e9e/fff.jpg'
+    },
   },
   watch: {
     file() {

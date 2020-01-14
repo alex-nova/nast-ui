@@ -27,6 +27,7 @@ export default {
 <style lang="scss">
   html {
     --n-card-padding: var(--content-padding);
+    --n-card-margin: 20px;
   }
 </style>
 <style lang="scss" scoped>
@@ -37,7 +38,7 @@ export default {
     background: var(--content-bg);
     box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
     border-radius: var(--border-radius);
-    margin: 20px;
+    margin: var(--n-card-margin);
 
     & > .content {
       &>*:first-child {
@@ -61,13 +62,5 @@ export default {
     }
 
     main > *:first-child { margin-top: 0; }
-
-    .loader {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 2;
-    }
   }
 </style>

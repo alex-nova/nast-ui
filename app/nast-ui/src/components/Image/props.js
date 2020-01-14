@@ -6,6 +6,7 @@ export default {
     alt: { type: String, default: '', },
     inline: { type: Boolean, default: false, },
     round: { type: Boolean, default: false, },
+    mock: { type: Boolean, default: false, },
   },
 
   computed: {

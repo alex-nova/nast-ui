@@ -1,7 +1,9 @@
 <template>
   <div class="n-list">
-    <n-list-group :data="data" :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren"
-                  :sortable="sortable" />
+    <n-list-group :data="data" :item-title="itemTitle" :item-value="itemValue" :item-children="itemChildren" :sortable="sortable">
+      <template #group="{ item, }"><slot name="group" :item="item" /></template>
+      <template #default="{ item, }"><slot :item="item" /></template>
+    </n-list-group>
   </div>
 </template>
 

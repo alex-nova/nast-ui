@@ -7,7 +7,7 @@
         <slot v-if="isGroup" name="group" :item="item">{{ getTitle(item) }}</slot>
         <slot v-else :item="item">{{ getTitle(item) }}</slot>
       </div>
-      <n-dropdown :data="tools" up><n-icon class="n-tools" icon="cog" /></n-dropdown>
+      <n-dropdown :data="tools" side="right" @update:value="toolsClick"><n-icon class="n-tools" icon="cog" /></n-dropdown>
     </div>
     <n-list-group v-if="isGroup && s_open" :data="item[itemChildren]" :sortable="sortable">
       <template #group="{ item, }"><slot name="group" :item="item" /></template>
@@ -25,7 +25,7 @@ export default {
   mixins: [ props, ],
   data() {
     return {
-      s_open: this.open || false,
+      s_open: this.open || true,
       tools: [
         'Редактировать',
         'Удалить',
@@ -44,6 +44,11 @@ export default {
     },
   },
   methods: {
+    toolsClick(value) {
+      if (value === 'Редактировать') {
+        this.$router.push({ query: { modal: 'project', id: this.item.value, }, })
+      }
+    },
     getTitle(item) {
       return getTitle(item, this.itemTitle)
     },
@@ -93,7 +98,7 @@ export default {
       }
       
       .n-title {
-        padding: 8px 5px;
+        padding: 12px 5px;
       }
       .n-handle {
         cursor: grab;
