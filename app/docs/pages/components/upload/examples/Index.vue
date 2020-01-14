@@ -3,7 +3,7 @@
     <n-input title="Изображения" />
     <n-input title="Изображения" />
     <n-input title="Изображения" />
-    <n-upload title="Изображения" />
+    <n-upload title="Изображения" multi />
     <n-input title="Изображения" />
     <n-input title="Изображения" />
   </n-items>

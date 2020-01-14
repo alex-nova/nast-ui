@@ -287,10 +287,10 @@ export default {
         text-align: initial;
         pointer-events: none;
 
-        &.n-active {
+        /*&.n-active {*/
           top: -1em;
           font-size: .8em;
-        }
+        /*}*/
       }
 
       .n-margin {

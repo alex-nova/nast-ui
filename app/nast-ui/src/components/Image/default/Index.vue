@@ -1,5 +1,5 @@
 <template>
-  <div :class="[ 'n-image', {'n-inline':inline}, {'n-round':round}, ]">
+  <div :class="[ 'n-image', {'n-inline':inline}, {'n-round':round}, {'n-center':centered||bg}, {'n-bg':bg}, ]">
     <img ref="image" :src="s_src" :alt="alt" />
   </div>
 </template>
@@ -45,6 +45,7 @@ export default {
 <style lang="scss">
   html {
     --n-image-border: none;
+    --n-image-bg-color: rgba(127, 127, 127, .07)
   }
 </style>
 <style lang="scss" scoped>
@@ -53,6 +54,20 @@ export default {
     max-width: 500px;
     max-height: 500px;
 
+    &.n-bg {
+      background-image:
+        linear-gradient(45deg, var(--n-image-bg-color) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--n-image-bg-color) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--n-image-bg-color) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--n-image-bg-color) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+    &.n-center {
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+    }
     &.n-inline {
       display: inline-flex;
     }

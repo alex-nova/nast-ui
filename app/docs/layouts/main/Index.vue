@@ -16,7 +16,7 @@
         <n-link to="#">Сообщить об ошибке</n-link>
       </div>
     </n-layout-cool>
-    
+
     <Cards />
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
     avatar,
   }),
   computed: {
-    ...$n.mapGetters('pages', [ 'navigation', ]),
+    ...$app.store.mapGetters('pages', [ 'navigation', ]),
   },
 }
 </script>
@@ -53,7 +53,7 @@ export default {
       secondary: #ffd200,
       tertiary: #c556ff,
     ),
-    
+
     typography: (
       header-font: 'Roboto, sans-serif',
       text-font: '400 1em Roboto, sans-serif',
@@ -61,7 +61,7 @@ export default {
       h3-font: '400 1.2em var(--header-font)',
       text-color: #444,
     ),
-  
+
   ),
 ));
 

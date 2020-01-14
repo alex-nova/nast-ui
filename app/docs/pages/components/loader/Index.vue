@@ -15,7 +15,7 @@ export default {
     props,
   }),
   computed: {
-    ...$n.mapGetters('components', [ 'colorsAsText', ]),
+    ...$app.store.mapGetters('components', [ 'colorsAsText', ]),
     descriptions() {
       return {
         color: `Цвет полосы загрузки. Может принимать значения: ${this.colorsAsText}.`,

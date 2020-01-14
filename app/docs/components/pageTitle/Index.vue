@@ -14,7 +14,7 @@ export default {
     title: { type: String, default: '', },
   },
   computed: {
-    ...$n.mapGetters('pages', [ 'structureByName', 'getPage', ]),
+    ...$app.store.mapGetters('pages', [ 'structureByName', 'getPage', ]),
     breadcrumbs() {
       return this.structureByName(this.$route.name)
     },
@@ -28,9 +28,9 @@ export default {
 <style lang="scss" scoped>
 .component-page-title {
   margin: 0 0 30px;
-  
+
   .content {
-    
+
     h1 {
       margin: 0;
       padding: 25px var(--n-layout-content-padding);

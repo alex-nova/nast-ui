@@ -3,21 +3,17 @@
     <n-form-item :title="title" active>
       <div class="n-input-area">
         <n-button @click="click">Выбрать файл</n-button>
-        <input ref="input" type="file" :multiple="multi" @change="change" />
-        <div v-if="!multi" class="n-preview"><n-image :file="files[0]" /></div>
+        <input ref="input" type="file" :multiple="multi" @change="input" />
+      </div>
+      <div v-if="s_files.length" class="n-files">
+        <n-editable-file v-for="(file, i) in s_files" :key="i" :file="file" @remove="remove(i)" />
       </div>
     </n-form-item>
-
-    <template v-if="multi">
-      <div v-for="(file, i) in files" :key="i">
-        <n-image :file="file" />
-        <div class="n-info">{{ file.name }} {{ size(file.size) }}</div>
-      </div>
-    </template>
   </div>
 </template>
 
 <script>
+import each from 'lodash/each'
 import props from './../props'
 
 export default {
@@ -25,24 +21,46 @@ export default {
   mixins: [ props, ],
   data() {
     return {
-      files: [],
+      s_files: this.files || [],
     }
   },
-  methods: {
-    size(bytes) {
-      let sOutput = bytes + ' bytes'
-      const aMultiples = [ 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', ]
-      let nMultiple = 0
-      for (let nApprox = bytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
-        sOutput = nApprox.toFixed(2) + ' ' + aMultiples[nMultiple] + ' (' + bytes + ' bytes)'
-      }
-      return sOutput
+  watch: {
+    files(value) {
+      this.s_files = value
     },
+  },
+  methods: {
     click() {
       this.$refs.input.click()
     },
-    change() {
-      this.files = this.$refs.input.files
+    remove(i) {
+      const newFiles = this.s_files
+      newFiles.splice(i, 1)
+
+      this.s_change(newFiles)
+    },
+    input() {
+      let newFiles = []
+      if (this.multi) {
+        newFiles = this.s_files
+        each(this.$refs.input.files, (file) => {
+          newFiles.push(file)
+        })
+      } else {
+        newFiles = this.$refs.input.files
+      }
+
+      this.s_change(newFiles)
+    },
+    s_change(newFiles) {
+      if (this.files === null) {
+        this.$set(this, 's_files', newFiles)
+      }
+
+      this.change(newFiles)
+      this.$emit('change', newFiles)
+      this['update:files'](newFiles)
+      this.$emit('update:files', newFiles)
     },
   },
 }
@@ -50,9 +68,11 @@ export default {
 
 <style lang="scss" scoped>
   .n-upload {
+
     .n-button {
       font-size: .8em;
     }
+
     .n-input-area {
       input {
         visibility: hidden;
@@ -61,8 +81,14 @@ export default {
         z-index: -1;
       }
     }
-    .n-image {
-      width: 100px;
+
+    .n-files {
+      margin: 0 -8px -8px;
+      display: flex;
+      & > * {
+        margin: 8px;
+      }
     }
+
   }
 </style>

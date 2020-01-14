@@ -15,7 +15,7 @@ export default {
     props,
   }),
   computed: {
-    ...$n.mapGetters('components', [ 'colorsAsText', ]),
+    ...$app.store.mapGetters('components', [ 'colorsAsText', ]),
     descriptions() {
       return {
         value: 'Текущее значение загрузки. Может принимать значения от 0 до 1.',
