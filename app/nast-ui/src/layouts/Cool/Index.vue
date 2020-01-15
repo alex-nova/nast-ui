@@ -2,13 +2,13 @@
   <div class="n-layout-cool">
     <div class="layout-content-wrapper">
       <layout-sidebar :menu="menu" :profile="profile">
-        <template #logo><slot name="logo" /></template>
+        <template #logo><div class="n-logo"><slot name="logo" /></div></template>
         <template #logo-min><slot name="logo-min" /></template>
         <template #avatar><slot name="avatar" /></template>
         <template #name><slot name="name" /></template>
         <template #footer><slot name="footer" /></template>
       </layout-sidebar>
-      
+
       <div class="layout-content">
         <main>
           <slot name="content"><router-view></router-view></slot>
@@ -54,13 +54,21 @@ export default {
 <style lang="scss" scoped>
   .n-layout-cool {
     --body-bg: #fbfbfd;
-    
+
     overflow: hidden;
-    
+
     .layout-content-wrapper {
       display: flex;
       flex-direction: row;
       min-height: 100vh;
+
+      .n-logo {
+        font-size: 1.6em;
+        line-height: 1;
+        padding: 10px 0;
+        font-weight: 600;
+        color: var(--text-color-op);
+      }
     }
     .layout-content {
       flex-grow: 1;
@@ -69,20 +77,20 @@ export default {
       flex-direction: column;
       padding-right: var(--n-layout-padding);
       background: #efeff5;
-      
+
       main {
         flex-grow: 1;
         background: var(--body-bg);
         box-shadow: 1px 1px 10px rgba(127, 127, 127, .5);
       }
-      
+
       .tools {
         position: fixed;
         right: 0;
         width: var(--n-layout-padding);
         height: 100%;
         justify-content: space-between;
-        
+
         &, .top, .bottom {
           display: flex;
           flex-direction: column;
@@ -91,7 +99,7 @@ export default {
         }
         .top { justify-content: flex-start; }
         .bottom { justify-content: flex-end; }
-        
+
         .divider {
           width: 100%;
           height: 1px;
@@ -116,7 +124,7 @@ export default {
         }
       }
     }
-    
+
     &::v-deep * {
       &::-webkit-scrollbar {
         height: 10px;

@@ -59,10 +59,10 @@ export default {
   },
   data: () => ({
     columns: [
-      { name: 'name', width: '100px', },
+      { name: 'name', },
       { name: 'type', },
       { name: 'default', },
-      { name: 'desc', minWidth: '300px', maxWidth: '800px', },
+      { name: 'desc', width: '50%', },
     ],
     anchors: {},
   }),
@@ -137,7 +137,7 @@ export default {
 
 <style lang="scss" scoped>
   .component-props-card {
-  
+
     .n-card {
       --n-table-border-top-width: 0;
       --n-table-border-right-width: 0;
@@ -149,17 +149,17 @@ export default {
           }
         }
       }
-    
+
       &::v-deep {
         main {
           max-height: 500px;
         }
       }
-      
+
       .component-source-code {
         font-size: .8em;
       }
-  
+
       .name {
         padding-right: 20px;
       }

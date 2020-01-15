@@ -20,25 +20,13 @@ export default {
 </style>
 <style scoped lang="scss">
   .n-items {
-    &.n-vertical {
-      margin: calc(-1 * var(--n-items-margin)) 0;
-      display: flex;
-      flex-direction: column;
+    margin: calc(-1 * var(--n-items-margin));
+    width: 100%;
 
-      & > * {
-        margin: var(--n-items-margin) 0;
-      }
+    &::v-deep >* {
+      margin: var(--n-items-margin);
+      display: inline-block;
+      vertical-align: top;
     }
-
-    &:not(.n-vertical) {
-      margin: calc(-1 * var(--n-items-margin));
-
-      &::v-deep >* {
-        margin: var(--n-items-margin);
-        display: inline-block;
-        vertical-align: top;
-      }
-    }
-
   }
 </style>

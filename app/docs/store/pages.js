@@ -40,7 +40,6 @@ export default {
         { name: 'progress', },
       ], },
       { name: 'directives', },
-      { name: 'konstructor', },
     ],
 
     titles: {

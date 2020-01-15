@@ -3,7 +3,7 @@
     <div :class="[ 'table' , { 'js': js, }, ]">
       <div v-if="!headless" class="row header">
         <div v-for="column in s_columns" :key="column.name"
-             :style="columnStyle(column, true)" :class="[ 'cell', column.name, ...column.classes, ]"
+             :style="columnStyle(column, true)" :class="[ 'cell', column.name, ...column.class, ]"
              @click="s_headerClick($event, column)"
         >
           <slot :column="column" name="headerCell">{{ getTitle(column) }}</slot>
@@ -11,14 +11,14 @@
       </div>
       <div v-for="(item, i) in data" :key="item[keyName] || i" class="row item">
         <div v-for="column in s_columns" :key="column.name"
-             :style="columnStyle(column)" :class="[ 'cell', column.name, ...column.classes, ]"
+             :style="columnStyle(column)" :class="[ 'cell', column.name, ...column.class, ]"
              @click="s_cellClick($event, item, column)"
         >
           <slot :name="column.name" :item="item">{{ item[column.name] }}</slot>
         </div>
       </div>
     </div>
-    
+
     <div v-if="!data.length" class="message">
       <slot name="message">No data</slot>
     </div>
@@ -40,28 +40,25 @@ export default {
   methods: {
     columnStyle(column, header = false) {
       const style = {}
-      
+
       if (!header) {
         if (column.align) {
           style.textAlign = column.align
         }
       }
-      
-      style.minWidth = column.minWidth
-      style.maxWidth = column.maxWidth
-  
+
       if (this.js) {
         style.minWidth = column.width
       } else {
         style.width = column.width
       }
-      
+
       return style
     },
     getTitle(column) {
       return column.title === undefined ? column.name : column.title
     },
-  
+
     s_headerClick(event, column) {
       this.headerClick(event, column)
       this.$emit('headerClick', event, column)
@@ -76,13 +73,13 @@ export default {
 
 <style lang="scss">
   html {
-    --n-table-cell-padding: 12px 0;
-    
+    --n-table-cell-padding: 12px 5px;
+
     --n-table-cell-margin-top: 0px;
     --n-table-cell-margin-right: 0px;
     --n-table-cell-margin-bottom: 0px;
     --n-table-cell-margin-left: 0px;
-  
+
     --n-table-border-top-width: 1px;
     --n-table-border-right-width: 0;
     --n-table-border-bottom-width: 1px;
@@ -93,7 +90,7 @@ export default {
 <style lang="scss" scoped>
   .n-table {
     overflow-x: auto;
-    
+
     .table {
       display: table;
       border-collapse: collapse;
@@ -116,10 +113,10 @@ export default {
       border-width: var(--n-table-border-top-width) var(--n-table-border-right-width)
       var(--n-table-border-bottom-width) var(--n-table-border-left-width);
     }
-    
+
     .table.js {
       display: block;
-      
+
       .row {
         display: flex;
         flex-wrap: nowrap;
@@ -144,7 +141,7 @@ export default {
         margin-left: var(--n-table-cell-margin-left);
       }
     }
-    
+
     .message {
       padding: 20px 40px 40px;
       text-align: center;

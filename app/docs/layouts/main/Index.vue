@@ -1,7 +1,7 @@
 <template>
   <div class="layout-main">
     <n-layout-cool :menu="navigation">
-      <template #logo><img :src="logo" /></template>
+      <template #logo>Документация</template>
       <template #logo-min><img :src="logoMin" /></template>
       <template #avatar><img :src="avatar" /></template>
       <div slot="content">
@@ -31,6 +31,11 @@ import Cards from 'cards/Index'
 export default {
   name: 'MainLayout',
   components: { PageTitle, Cards, },
+  html() {
+    return {
+      title: 'Документация',
+    }
+  },
   data: () => ({
     logo,
     logoMin,
@@ -49,7 +54,7 @@ export default {
 @include initialize((
   default: (
     colors: (
-      primary: #00a0e3,
+      primary: #3472e3,
       secondary: #ffd200,
       tertiary: #c556ff,
     ),
