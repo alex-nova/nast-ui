@@ -85,6 +85,7 @@ export default {
     .n-files {
       margin: 0 -8px -8px;
       display: flex;
+      flex-wrap: wrap;
       & > * {
         margin: 8px;
       }
