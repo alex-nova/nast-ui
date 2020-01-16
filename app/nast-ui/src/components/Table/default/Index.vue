@@ -12,8 +12,7 @@
       <div v-for="(item, i) in data" :key="item[keyName] || i" class="row item">
         <div v-for="column in s_columns" :key="column.name"
              :style="columnStyle(column)" :class="[ 'cell', column.name, ...column.class, ]"
-             @click="s_cellClick($event, item, column)"
-        >
+             @click="s_cellClick($event, item, column)">
           <slot :name="column.name" :item="item">{{ item[column.name] }}</slot>
         </div>
       </div>

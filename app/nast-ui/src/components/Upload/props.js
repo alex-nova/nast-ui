@@ -1,11 +1,11 @@
 export default {
   props: {
     title: { type: String, default: '', },
-    files: { type: Array, default: null, },
+    value: { type: [ Array, FileList, File, Object, ], default: null, },
     multi: { type: Boolean, default: false, },
 
-    change: { type: Function, default: (files) => {}, },
-    'update:files': { type: Function, default: (files) => {}, },
+    input: { type: Function, default: (files) => {}, },
+    'update:value': { type: Function, default: (files) => {}, },
   },
 
   computed: {

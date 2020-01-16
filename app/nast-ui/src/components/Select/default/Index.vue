@@ -112,14 +112,14 @@ export default {
   .n-select {
     --n-popup-width: var(--n-input-width);
     --n-progress-height: 2px;
-    
+
     outline: none;
     cursor: text;
-    
+
     &.n-inline {
       display: inline-block;
     }
-    
+
     &::v-deep {
       .n-input .n-icon-right {
         transition: transform var(--transition);
