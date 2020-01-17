@@ -1,5 +1,6 @@
 <template>
   <div class="n-table">
+    <n-loader :loading="loading" />
     <div :class="[ 'table' , { 'js': js, }, ]">
       <div v-if="!headless" class="row header">
         <div v-for="column in s_columns" :key="column.name"
@@ -89,6 +90,7 @@ export default {
 <style lang="scss" scoped>
   .n-table {
     overflow-x: auto;
+    position: relative;
 
     .table {
       display: table;

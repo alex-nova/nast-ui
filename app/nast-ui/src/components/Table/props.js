@@ -6,6 +6,7 @@ export default {
     js: { type: Boolean, default: false, },
     headless: { type: Boolean, default: false, },
     keyName: { type: String, default: 'id', },
+    loading: { type: Boolean, default: false, }, // TODO
 
     headerClick: { type: Function, default: (event, column) => {}, },
     cellClick: { type: Function, default: (event, item, column) => {}, },

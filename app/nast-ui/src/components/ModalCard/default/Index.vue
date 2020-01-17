@@ -1,7 +1,9 @@
 <template>
   <div v-if="s_value" class="n-modal-card">
     <div class="n-modal-content">
-      <n-loader :loading="loading" />
+      <div v-if="loading" style="top: 0; left: 50%; width: 50%; height: 100%; position: fixed; z-index: 1100;">
+        <n-loader :loading="loading" />
+      </div>
       <header><slot name="header"></slot></header>
       <section v-if="$slots.body"><slot name="body"></slot></section>
       <nav><n-tabs :name="name" :data="tabs" :disabled="disabled" @update:active="changeTab" /></nav>
@@ -80,13 +82,15 @@ export default {
 </style>
 <style lang="scss" scoped>
   .n-modal-card {
+    position: fixed;
+    z-index: 1001;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    width: 100%;
     .n-modal-content {
-      position: fixed;
-      z-index: 1001;
+      margin-left: 50%;
       width: 50%;
-      right: 0;
-      bottom: 0;
-      top: 0;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -136,7 +140,7 @@ export default {
       right: 0;
       bottom: 0;
       background: rgba(0, 0, 0, .5);
-      z-index: 1000;
+      z-index: -1;
       cursor: pointer;
     }
   }

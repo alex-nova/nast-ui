@@ -1,5 +1,5 @@
 <template>
-  <div :class="[ 'n-items', {'n-vertical':vertical}, ]">
+  <div :class="[ 'n-items', {'n-inline':inline}, ]">
     <slot />
   </div>
 </template>
@@ -22,6 +22,11 @@ export default {
   .n-items {
     margin: calc(-1 * var(--n-items-margin));
     width: 100%;
+    
+    &.n-inline {
+      display: inline-block;
+      width: auto;
+    }
 
     &::v-deep >* {
       margin: var(--n-items-margin);

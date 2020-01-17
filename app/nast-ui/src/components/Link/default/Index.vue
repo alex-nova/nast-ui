@@ -45,10 +45,10 @@ export default {
   mixins: [ props, ],
   computed: {
     s_route() {
-      if (this.type !== 'internal' || this.isSpan) {
-        return undefined
+      if (this.type === 'internal' && !this.isSpan) {
+        return isString(this.to) ? { name: this.to, } : this.to
       }
-      return isString(this.to) ? { name: this.to, } : this.to
+      return undefined
     },
     s_label() {
       const routeName = this.s_route ? this.s_route.name : false
@@ -58,7 +58,7 @@ export default {
       return !this.to || size(this.to) === 0
     },
     isScrollTo() {
-      return !this.isSpan && this.type === 'internal' && this.isCurrentRoute
+      return this.type === 'internal' && this.isCurrentRoute
     },
     href() {
       if (this.isScrollTo) {
@@ -139,7 +139,7 @@ export default {
         },
       }
       
-      const value = this.$slots.default[0].text
+      const value = this.to || this.$slots.default[0].text
       const func = types[this.type] || types['other']
       return func(value)
     },

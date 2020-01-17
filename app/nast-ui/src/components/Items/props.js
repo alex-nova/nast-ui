@@ -1,13 +1,13 @@
 
 export default {
   props: {
-    vertical: { type: Boolean, default: false, },
+    inline: { type: Boolean, default: false, },
   },
   
   computed: {
     props() {
       return {
-        vertical: this.vertical,
+        inline: this.inline,
       }
     },
     events() {
