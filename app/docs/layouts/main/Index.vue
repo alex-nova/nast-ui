@@ -40,9 +40,50 @@ export default {
     logo,
     logoMin,
     avatar,
+    items: [
+      { name: 'index', },
+      { name: 'componentsGroup', icon: 'folder', children: [
+        { name: 'button', },
+        { name: 'dropdown', },
+        { name: 'input', },
+        { name: 'loader', },
+        { name: 'select', },
+        { name: 'list', },
+        { name: 'modalCard', },
+        { name: 'image', },
+        { name: 'upload', },
+      ], },
+      { name: 'baseComponentsGroup', icon: 'folder', children: [
+        { name: 'popup', },
+        { name: 'progress', },
+      ], },
+      { name: 'directives', },
+    ],
+    titles: {
+      index: 'Описание',
+      componentsGroup: 'Компоненты',
+      components: 'Все компоненты',
+      button: 'Button',
+      dropdown: 'Dropdown',
+      input: 'Input',
+      loader: 'Loader',
+      select: 'Select',
+      list: 'List',
+      modalCard: 'ModalCard',
+      image: 'Image',
+      upload: 'Upload',
+      directives: 'Директивы',
+      konstructor: 'Конструктор',
+
+      baseComponentsGroup: 'Базовые компоненты',
+      popup: 'Popup',
+      progress: 'Progress',
+    },
   }),
   computed: {
-    ...$app.store.mapGetters('pages', [ 'navigation', ]),
+    navigation() {
+      return $app.pages.navigation(this.items, this.titles)
+    },
   },
 }
 </script>

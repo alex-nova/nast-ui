@@ -1,8 +1,7 @@
 <template>
   <div class="n-datatable">
-    <n-data-component :data="data" :fields="columns" @updated="updated">
-      <n-table :data="computedData" :columns="columns" />
-    </n-data-component>
+    <n-data-component :data="data" :fields="columns" @updated="updated" />
+    <n-table :data="computedData" :columns="columns" />
   </div>
 </template>
 
@@ -27,6 +26,6 @@ export default {
 
 <style lang="scss" scoped>
   .n-datatable {
-  
+
   }
 </style>
