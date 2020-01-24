@@ -1,6 +1,6 @@
 <template>
   <div class="n-loader">
-  
+
   </div>
 </template>
 
@@ -8,7 +8,6 @@
 import props from './../props'
 
 export default {
-  name: 'NLoader',
   mixins: [ props, ],
   data() {
     return {
@@ -21,6 +20,6 @@ export default {
 
 <style lang="scss" scoped>
   .n-loader {
-  
+
   }
 </style>

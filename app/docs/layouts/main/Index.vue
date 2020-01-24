@@ -27,6 +27,7 @@ import logoMin from './../../assets/images/logo-min.png'
 import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
 import Cards from 'cards/Index'
+import pages from './../pages'
 
 export default {
   name: 'MainLayout',
@@ -59,30 +60,10 @@ export default {
       ], },
       { name: 'directives', },
     ],
-    titles: {
-      index: 'Описание',
-      componentsGroup: 'Компоненты',
-      components: 'Все компоненты',
-      button: 'Button',
-      dropdown: 'Dropdown',
-      input: 'Input',
-      loader: 'Loader',
-      select: 'Select',
-      list: 'List',
-      modalCard: 'ModalCard',
-      image: 'Image',
-      upload: 'Upload',
-      directives: 'Директивы',
-      konstructor: 'Конструктор',
-
-      baseComponentsGroup: 'Базовые компоненты',
-      popup: 'Popup',
-      progress: 'Progress',
-    },
   }),
   computed: {
     navigation() {
-      return $app.pages.navigation(this.items, this.titles)
+      return $app.router.navigation(this.items, pages)
     },
   },
 }

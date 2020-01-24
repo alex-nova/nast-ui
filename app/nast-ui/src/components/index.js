@@ -6,6 +6,7 @@ import Card from './Card/default/Index.vue'
 import Center from './Center/default/Index.vue'
 import Container from './Container/default/Index.vue'
 import DataComponent from './DataComponent/default/Index.vue'
+import DataFilter from './DataFilter/default/Index.vue'
 import Datalist from './Datalist/default/Index.vue'
 import Datatable from './Datatable/default/Index.vue'
 import Divide from './Divide/default/Index.vue'
@@ -30,6 +31,7 @@ import ModalCard from './ModalCard/default/Index.vue'
 import Navigation from './Navigation/default/Index.vue'
 import NavigationGroup from './Navigation/_NavigationGroup/default/Index.vue'
 import NavigationItem from './Navigation/_NavigationItem/default/Index.vue'
+import Pagination from './Pagination/default/Index.vue'
 import Popup from './Popup/default/Index.vue'
 import Progress from './Progress/default/Index.vue'
 import Select from './Select/default/Index.vue'
@@ -50,6 +52,7 @@ export default {
     Vue.component('nCenter', Center)
     Vue.component('nContainer', Container)
     Vue.component('nDataComponent', DataComponent)
+    Vue.component('nDataFilter', DataFilter)
     Vue.component('nDatalist', Datalist)
     Vue.component('nDatatable', Datatable)
     Vue.component('nDivide', Divide)
@@ -74,6 +77,7 @@ export default {
     Vue.component('nNavigation', Navigation)
     Vue.component('nNavigationGroup', NavigationGroup)
     Vue.component('nNavigationItem', NavigationItem)
+    Vue.component('nPagination', Pagination)
     Vue.component('nPopup', Popup)
     Vue.component('nProgress', Progress)
     Vue.component('nSelect', Select)

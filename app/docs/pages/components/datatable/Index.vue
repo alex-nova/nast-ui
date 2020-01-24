@@ -1,7 +1,6 @@
 <template>
   <div class="page-components-datatable">
     <component-page :props="props" :descriptions="descriptions" :todo="todo" path="components/datatable/examples" />
-    
   </div>
 </template>
 

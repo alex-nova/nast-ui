@@ -8,18 +8,19 @@
 </template>
 
 <script>
+import pages from './../../layouts/pages'
+
 export default {
   name: 'PageTitle',
   props: {
     title: { type: String, default: '', },
   },
   computed: {
-    ...$app.store.mapGetters('pages', [ 'structureByName', 'getPage', ]),
     breadcrumbs() {
-      return this.structureByName(this.$route.name)
+      return $app.router.breadcrumbs(this.$route.name, pages)
     },
     page() {
-      return this.getPage(this.$route.name)
+      return $app.router.getPage(this.$route.name)
     },
   },
 }
@@ -30,7 +31,6 @@ export default {
   margin: 0 0 30px;
 
   .content {
-
     h1 {
       margin: 0;
       padding: 25px var(--n-layout-content-padding);
