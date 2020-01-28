@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="isSpan"
-    class="n-link"
+    :class="classes"
     @click="s_click"
   ><slot /></span>
   
@@ -9,7 +9,7 @@
     v-else-if="isScrollTo"
     :aria-label="s_label"
     :href="href"
-    class="n-link"
+    :class="classes"
     @click="scrollTo"
   ><slot /></a>
   
@@ -19,7 +19,7 @@
     :active-class="activeClass"
     :exact-active-class="exactActiveClass"
     :aria-label="s_label"
-    class="n-link"
+    :class="classes"
     @click.native="s_click"
   >
     <slot />
@@ -30,7 +30,7 @@
     :href="getHrefByType()"
     :target="target"
     :aria-label="s_label"
-    class="n-link"
+    :class="classes"
     @click="s_click"
   ><slot /></a>
 </template>
@@ -44,6 +44,9 @@ export default {
   name: 'NLink',
   mixins: [ props, ],
   computed: {
+    classes() {
+      return [ 'n-link', { 'n-wide': this.wide, }, ]
+    },
     s_route() {
       if (this.type === 'internal' && !this.isSpan) {
         return isString(this.to) ? { name: this.to, } : this.to
@@ -150,3 +153,12 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .n-link {
+    &.n-wide {
+      display: block;
+      width: 100%;
+    }
+  }
+</style>

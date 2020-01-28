@@ -14,7 +14,7 @@
         <div v-for="column in s_columns" :key="column.name"
              :style="columnStyle(column)" :class="[ 'cell', column.name, ...column.class, ]"
              @click="s_cellClick($event, item, column)">
-          <slot :name="column.name" :item="item">{{ item[column.name] }}</slot>
+          <slot :name="column.name" :item="item">{{ get(item, column.name) }}</slot>
         </div>
       </div>
     </div>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import get from 'lodash/get'
 import props from './../props'
 import { normalizeColumns, } from './../utils'
 
@@ -38,6 +39,7 @@ export default {
     },
   },
   methods: {
+    get,
     columnStyle(column, header = false) {
       const style = {}
 
@@ -73,7 +75,7 @@ export default {
 
 <style lang="scss">
   html {
-    --n-table-cell-padding: 12px 5px;
+    --n-table-cell-padding: 12px 12px;
 
     --n-table-cell-margin-top: 0px;
     --n-table-cell-margin-right: 0px;
@@ -113,6 +115,8 @@ export default {
       border: var(--n-table-border);
       border-width: var(--n-table-border-top-width) var(--n-table-border-right-width)
       var(--n-table-border-bottom-width) var(--n-table-border-left-width);
+      &:first-child { padding-left: 0; }
+      &:last-child { padding-right: 0; }
     }
 
     .table.js {

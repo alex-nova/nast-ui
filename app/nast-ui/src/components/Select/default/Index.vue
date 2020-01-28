@@ -119,6 +119,9 @@ export default {
     &.n-inline {
       display: inline-block;
     }
+    &:not(.n-inline) {
+      width: 100%;
+    }
 
     &::v-deep {
       .n-input .n-icon-right {

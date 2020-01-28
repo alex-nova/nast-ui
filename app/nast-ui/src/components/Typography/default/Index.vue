@@ -35,8 +35,8 @@ export default {
     }
   }
   h1 { font: var(--h1-font); margin: 1.4em 0 1.2em; }
-  h2 { font: var(--h2-font); margin: 1.4em 0 1.2em; }
-  h3 { font: var(--h3-font); margin: 1.4em 0 1.2em; }
+  h2 { font: var(--h2-font); margin: .9em 0 .7em; }
+  h3 { font: var(--h3-font); margin: .9em 0 .7em; }
   h4 { font: var(--h4-font); margin: .9em 0 .7em; }
   h5 { font: var(--h5-font); margin: .8em 0 .6em; }
   h6 { font: var(--h6-font); margin: .7em 0 .5em; }
