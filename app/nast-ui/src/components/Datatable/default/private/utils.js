@@ -16,7 +16,8 @@ const splitStringBySearch = (string, search = [], ignoreCase = true) => {
 
   const result = search.reduce((result, s) => {
     const stringToFind = ignoreCase ? string.toLowerCase() : string
-    result[s] = _getMatches(stringToFind, s)
+    const searchString = ignoreCase ? s.toLowerCase() : s
+    result[s] = _getMatches(stringToFind, searchString)
     return result
   }, {})
 
