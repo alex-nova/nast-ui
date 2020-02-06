@@ -27,7 +27,6 @@ import logoMin from './../../assets/images/logo-min.png'
 import avatar from './../../assets/images/avatar.png'
 import PageTitle from './../../components/pageTitle/Index'
 import Cards from 'cards/Index'
-import pages from './../pages'
 
 export default {
   name: 'MainLayout',
@@ -43,6 +42,9 @@ export default {
     avatar,
     items: [
       { name: 'index', },
+      { name: 'dataComponentsGroup', icon: 'folder', children: [
+        { name: 'comp.datatable', },
+      ], },
       { name: 'componentsGroup', icon: 'folder', children: [
         { name: 'button', },
         { name: 'dropdown', },
@@ -63,7 +65,7 @@ export default {
   }),
   computed: {
     navigation() {
-      return $app.router.navigation(this.items, pages)
+      return $app.router.navigation(this.items)
     },
   },
 }

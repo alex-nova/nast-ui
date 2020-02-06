@@ -1,15 +1,13 @@
 <template>
   <div class="component-page-title">
     <div class="content">
-      <h1 slot="header">{{ page.title }}</h1>
+      <h1 slot="header">{{ $app.router.current().title }}</h1>
       <n-breadcrumbs :items="breadcrumbs" />
     </div>
   </div>
 </template>
 
 <script>
-import pages from './../../layouts/pages'
-
 export default {
   name: 'PageTitle',
   props: {
@@ -17,10 +15,7 @@ export default {
   },
   computed: {
     breadcrumbs() {
-      return $app.router.breadcrumbs(this.$route.name, pages)
-    },
-    page() {
-      return $app.router.getPage(this.$route.name)
+      return $app.router.breadcrumbs()
     },
   },
 }

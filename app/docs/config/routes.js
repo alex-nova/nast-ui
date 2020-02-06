@@ -4,6 +4,8 @@ export default [
     { path: '', component: () => import('layouts/main/Index'), children: [
       { path: '', name: 'index', icon: 'tachometer-alt', component: () => import('pages/index/Index'), },
 
+      { path: 'components/datatable', name: 'comp.datatable', parent: 'components', component: () => import('pages/components/datatable/Index'), },
+
       { path: 'components', name: 'components', icon: 'list-alt', parent: 'index', component: () => import('pages/components/Index'), },
       { path: 'components/button', name: 'button', parent: 'components', component: () => import('pages/components/button/Index'), },
       { path: 'components/dropdown', name: 'dropdown', parent: 'components', component: () => import('pages/components/dropdown/Index'), },
