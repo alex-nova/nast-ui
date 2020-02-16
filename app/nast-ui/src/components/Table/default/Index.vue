@@ -93,6 +93,8 @@ export default {
   .n-table {
     overflow-x: auto;
     position: relative;
+    display: block;
+    width: 100%;
 
     .table {
       display: table;
@@ -104,7 +106,7 @@ export default {
       &.header {
         display: table-header-group;
         .cell {
-          font-weight: bold;
+          font-weight: 500;
         }
       }
     }

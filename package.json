@@ -10,12 +10,9 @@
   },
   "dependencies": {
     "highlight.js": "^9.15.9",
-    "lodash": "^4.*",
     "nast": "file:../nast/app/nast",
     "nast-ui": "file:app/nast-ui",
-    "sortablejs": "^1.10.1",
-    "vue": "^2.6.10",
-    "vuedraggable": "^2.23.2"
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.0",

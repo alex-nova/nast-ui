@@ -19,7 +19,8 @@
   "main": "index.js",
   "dependencies": {
     "dragula": "^3.7.2",
-    "lodash": "^4.*"
+    "lodash": "^4.*",
+    "sortablejs": "^1.10.1"
   },
   "peerDependencies": {
     "vue": "^2.6.*"
