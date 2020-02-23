@@ -5,7 +5,7 @@ export default {
     inline: { type: Boolean, default: false, },
     message: { type: String, default: '', },
     color: { type: String, default: 'default', },
-    active: { type: Boolean, default: false, },
+    active: { type: Boolean, default: true, },
     focused: { type: Boolean, default: false, },
   },
 

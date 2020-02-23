@@ -15,6 +15,7 @@ import DropdownItem from './Dropdown/_DropdownItem/default/Index.vue'
 import DropdownGroup from './Dropdown/_DropdownGroup/default/Index.vue'
 import EditableFile from './EditableFile/default/Index.vue'
 import File from './File/default/Index.vue'
+import Form from './Form/default/Index.vue'
 import FormItem from './FormItem/default/Index.vue'
 import Header from './Header/default/Index.vue'
 import Icon from './Icon/default/Index.vue'
@@ -61,6 +62,7 @@ export default {
     Vue.component('nDropdownGroup', DropdownGroup)
     Vue.component('nEditableFile', EditableFile)
     Vue.component('nFile', File)
+    Vue.component('nForm', Form)
     Vue.component('nFormItem', FormItem)
     Vue.component('nHeader', Header)
     Vue.component('nIcon', Icon)

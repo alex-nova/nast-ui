@@ -38,7 +38,8 @@ export default {
         if (value && !this.isInUrl()) {
           this.$router.push({ query: { ...this.$route.query, [this.queryParam]: this.name, }, })
         } else if (!value && this.isInUrl()) {
-          this.$router.push({ query: { ...this.$route.query, [this.queryParam]: undefined, }, })
+          this.$router.back()
+          // this.$router.push({ query: { ...this.$route.query, [this.queryParam]: undefined, }, })
         }
       }
     },

@@ -116,7 +116,7 @@ export default {
             if (i.children) return { ...i, children: true, }
             return i
           })
-        
+          console.log({ data: result, pagination: { total, }, })
           resolve({ data: result, pagination: { total, }, })
         }, 300)
       })
