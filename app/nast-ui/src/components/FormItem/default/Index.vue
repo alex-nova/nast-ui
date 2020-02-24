@@ -49,7 +49,7 @@ export default {
       left: 0;
       white-space: nowrap;
       width: 100%;
-      overflow: hidden;
+      /*overflow: hidden;*/
       text-overflow: ellipsis;
       font-size: 1em;
       line-height: 1;
