@@ -75,6 +75,31 @@ export default {
         },
       }
     },
+    navigation() {
+      return [
+        { name: 'index', },
+        { name: 'dataComponentsGroup', icon: 'folder', children: [
+          { name: 'c.dataComponent', },
+          { name: 'comp.datatable', },
+        ], },
+        { name: 'componentsGroup', icon: 'folder', children: [
+          { name: 'button', },
+          { name: 'dropdown', },
+          { name: 'input', },
+          { name: 'loader', },
+          { name: 'select', },
+          { name: 'list', },
+          { name: 'modalCard', },
+          { name: 'image', },
+          { name: 'upload', },
+        ], },
+        { name: 'baseComponentsGroup', icon: 'folder', children: [
+          { name: 'popup', },
+          { name: 'progress', },
+        ], },
+        { name: 'directives', },
+      ]
+    },
   },
 
   auth: {

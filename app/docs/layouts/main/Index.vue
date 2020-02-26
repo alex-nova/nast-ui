@@ -40,32 +40,10 @@ export default {
     logo,
     logoMin,
     avatar,
-    items: [
-      { name: 'index', },
-      { name: 'dataComponentsGroup', icon: 'folder', children: [
-        { name: 'comp.datatable', },
-      ], },
-      { name: 'componentsGroup', icon: 'folder', children: [
-        { name: 'button', },
-        { name: 'dropdown', },
-        { name: 'input', },
-        { name: 'loader', },
-        { name: 'select', },
-        { name: 'list', },
-        { name: 'modalCard', },
-        { name: 'image', },
-        { name: 'upload', },
-      ], },
-      { name: 'baseComponentsGroup', icon: 'folder', children: [
-        { name: 'popup', },
-        { name: 'progress', },
-      ], },
-      { name: 'directives', },
-    ],
   }),
   computed: {
     navigation() {
-      return $app.router.navigation(this.items)
+      return $app.router.navigation($config('router.navigation')())
     },
   },
 }

@@ -18,6 +18,9 @@ export default [
       { path: 'components/image', name: 'image', parent: 'components', component: () => import('pages/components/image/Index'), },
       { path: 'components/upload', name: 'upload', parent: 'components', component: () => import('pages/components/upload/Index'), },
 
+      // data components
+      { path: 'components/data-component', name: 'c.dataComponent', parent: 'components', component: () => import('pages/components/dataComponent/Index'), },
+
       { path: 'components/popup', name: 'popup', parent: 'components', component: () => import('pages/components/popup/Index'), },
 
       { path: 'directives', name: 'directives', icon: 'sitemap', parent: 'index', component: () => import('pages/directives/Index'), },

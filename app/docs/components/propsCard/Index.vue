@@ -19,6 +19,10 @@
           <div class="title">description</div>
           <div class="description">{{ item.desc }}</div>
         </template>
+        <template #example="{ item, }">
+          <div class="title">example</div>
+          <source-code v-if="item.example" :code="item.example" lang="javascript" />
+        </template>
       </n-table>
     </n-card>
     <n-card>
@@ -41,6 +45,10 @@
           <div class="title">description</div>
           {{ item.desc }}
         </template>
+        <template #example="{ item, }">
+          <div class="title">example</div>
+          <source-code v-if="item.example" :code="item.example" lang="javascript" />
+        </template>
       </n-table>
     </n-card>
   </div>
@@ -55,6 +63,7 @@ export default {
   props: {
     props: { type: Object, default: () => ({}), }, // { props: {}, computed: {}, }
     descriptions: { type: Object, default: () => ({}), }, // { prop1: '', ... }
+    examples: { type: Object, default: () => ({}), }, // { prop1: '', ... }
     path: { type: String, default: '', }, // path to example files
   },
   data: () => ({
@@ -62,7 +71,8 @@ export default {
       { name: 'name', },
       { name: 'type', },
       { name: 'default', },
-      { name: 'desc', width: '50%', },
+      { name: 'desc', width: '40%', },
+      { name: 'example', },
     ],
     anchors: {},
   }),
@@ -74,6 +84,7 @@ export default {
           result.push({
             name,
             desc: this.descriptions[name],
+            example: this.examples[name],
             type: this.typeToString(item.type),
             default: this.defaultToString(item.default, item.type),
           })
