@@ -4,14 +4,15 @@
       <n-icon v-if="sortable" class="n-handle" icon="arrows-alt" />
       <n-icon v-if="isGroup" class="n-caret" icon="angle-right" @click="s_click" />
       <div class="n-title" @click="s_click">
-        <slot v-if="isGroup" name="group" :item="item">{{ getTitle(item) }}</slot>
-        <slot v-else :item="item">{{ getTitle(item) }}</slot>
+        <slot name="item" :item="item" :isGroup="isGroup">{{ getTitle(item) }}</slot>
       </div>
-      <n-dropdown :data="tools" side="right" @update:value="toolsClick"><n-icon class="n-tools" icon="cog" /></n-dropdown>
+      <slot name="tools" :item="item" :is-group="isGroup">
+        <n-dropdown :data="tools" side="right" @update:value="toolsClick"><n-icon class="n-tools" icon="cog" /></n-dropdown>
+      </slot>
     </div>
     <n-list-group v-if="isGroup && s_open" :data="item[itemChildren]" :sortable="sortable">
-      <template #group="{ item, }"><slot name="group" :item="item" /></template>
-      <template #default="{ item, }"><slot :item="item" /></template>
+      <template #item="{ item, isGroup, }"><slot name="item" :item="item" :is-group="isGroup" /></template>
+      <template #tools="{ item, isGroup, }"><slot name="tools" :item="item" :is-group="isGroup" /></template>
     </n-list-group>
   </div>
 </template>
@@ -122,7 +123,7 @@ export default {
     }
     
     .n-list-group {
-      padding-left: 20px;
+      padding-left: 40px;
     }
   }
 </style>

@@ -34,8 +34,8 @@ export default {
     itemChildren: { type: String, default: 'children', },
     getContent: { type: Function, default: (response) => response.data, },
     getTotalCount: { type: Function, default: (response) => {
-      if (response.pagination) {
-        return response.pagination.total || null
+      if (response.data && response.data.pagination) {
+        return response.data.pagination.total || null
       }
       if (response.headers) {
         return response.headers['x-total-count'] || null

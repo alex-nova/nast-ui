@@ -81,7 +81,7 @@ export default {
 
 <style lang="scss" scoped>
   .n-upload {
-
+    
     .n-button {
       font-size: .8em;
     }
@@ -92,6 +92,7 @@ export default {
         pointer-events: none;
         position: absolute;
         z-index: -1;
+        width: 0;
       }
     }
 

@@ -1,8 +1,8 @@
 <template>
   <div ref="group" :class="[ 'n-list-group', {'n-dragging': dragging}, ]">
     <n-list-item v-for="item in data" :key="getValue(item)" :item="item" :sortable="sortable">
-      <template #group="{ item, }"><slot name="group" :item="item" /></template>
-      <template #default="{ item, }"><slot :item="item" /></template>
+      <template #item="{ item, isGroup, }"><slot name="item" :item="item" :is-group="isGroup" /></template>
+      <template #tools="{ item, isGroup, }"><slot name="tools" :item="item" :is-group="isGroup" /></template>
     </n-list-item>
   </div>
 </template>
